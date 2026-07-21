@@ -150,20 +150,24 @@ document.getElementById('pageTitle').textContent = 'حرف ' + DATA.chip.charAt(
 var TOTAL_STEPS = 4; var currentStep = 1;
 
 function speak(text, rate){
-  var filename = 'audio/' + text.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') + '.mp3';
+  var slug = text.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  tryAudioFile(['audio/'+slug+'.mp3', 'audio/'+slug+'.wav'], 0, text, rate);
+}
+function tryAudioFile(paths, idx, text, rate){
+  if(idx >= paths.length){ speakTTS(text, rate); return; }
   var audio = new Audio();
   var handled = false;
   audio.addEventListener('error', function(){
     if(handled) return;
     handled = true;
-    speakTTS(text, rate);
+    tryAudioFile(paths, idx+1, text, rate);
   });
   audio.addEventListener('canplay', function(){
     if(handled) return;
     handled = true;
-    audio.play().catch(function(){ speakTTS(text, rate); });
+    audio.play().catch(function(){ tryAudioFile(paths, idx+1, text, rate); });
   });
-  audio.src = filename;
+  audio.src = paths[idx];
 }
 function speakTTS(text, rate){
   if(!('speechSynthesis' in window)) return;

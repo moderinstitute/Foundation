@@ -85,12 +85,16 @@ var PAIRS = [
 ];
 
 function speak(text){
-  var filename = 'audio/' + text.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') + '.mp3';
+  var slug = text.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  tryAudioFile(['audio/'+slug+'.mp3', 'audio/'+slug+'.wav'], 0, text);
+}
+function tryAudioFile(paths, idx, text){
+  if(idx >= paths.length){ speakTTS(text); return; }
   var audio = new Audio();
   var handled = false;
-  audio.addEventListener('error', function(){ if(handled) return; handled = true; speakTTS(text); });
-  audio.addEventListener('canplay', function(){ if(handled) return; handled = true; audio.play().catch(function(){ speakTTS(text); }); });
-  audio.src = filename;
+  audio.addEventListener('error', function(){ if(handled) return; handled = true; tryAudioFile(paths, idx+1, text); });
+  audio.addEventListener('canplay', function(){ if(handled) return; handled = true; audio.play().catch(function(){ tryAudioFile(paths, idx+1, text); }); });
+  audio.src = paths[idx];
 }
 function speakTTS(text){
   if(!('speechSynthesis' in window)) return;
