@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كيف تستخدم هذه الدورة — المعهد الأكاديمي الحديث</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C2B39; --ink-2:#111C26;
+    --chalk:#F5F1E6; --chalk-dim:#E4DBC6;
+    --gold:#C99A3E; --gold-soft:#E7C67B;
+    --terminal:#5FBF8A; --pencil:#B24A36;
+    --serif:'IBM Plex Serif',serif; --sans:'IBM Plex Sans',sans-serif; --mono:'IBM Plex Mono',monospace;
+    --arabic:'Noto Sans Arabic',sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--arabic);background:linear-gradient(180deg,#F7F3E9 0%,#F5F1E6 100%);color:var(--ink);direction:rtl;}
+  .wrap{max-width:700px;margin:0 auto;padding:30px 20px 80px;}
+  p{color:#4a5a68;line-height:1.75;}
+  .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .badge{font-family:var(--mono);font-size:.72rem;color:var(--pencil);background:#fbeae6;border-radius:20px;padding:5px 14px;direction:ltr;}
+  .btn-outline{border-color:#d5c9a3;color:var(--ink);background:transparent;padding:6px 12px;font-size:.78rem;border-radius:10px;border:1.5px solid #d5c9a3;text-decoration:none;font-family:var(--sans);}
+  h1{font-family:var(--serif);font-size:1.6rem;margin:14px 0 8px;}
+  h2{font-family:var(--serif);font-size:1.1rem;margin:0 0 10px;}
+  .section-card{
+    background:#fff;border:1px solid #ecdfc2;border-radius:16px;padding:20px 22px;margin-bottom:16px;
+    box-shadow:0 4px 18px -6px rgba(60,50,20,.06);
+  }
+  .icon-row{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;}
+  .icon-row:last-child{margin-bottom:0;}
+  .icon-box{
+    width:44px;height:44px;flex-shrink:0;border-radius:10px;background:var(--ink);color:var(--chalk);
+    display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+  }
+  .icon-text strong{display:block;margin-bottom:2px;font-size:.95rem;}
+  .icon-text span{font-size:.85rem;color:#8a7d5c;}
+  .steps-list{counter-reset:step;list-style:none;padding:0;margin:0;}
+  .steps-list li{
+    counter-increment:step;position:relative;padding-inline-start:36px;margin-bottom:14px;font-size:.92rem;color:#4a5a68;
+  }
+  .steps-list li::before{
+    content:counter(step);position:absolute;right:0;top:0;width:26px;height:26px;border-radius:50%;
+    background:var(--gold);color:var(--ink-2);font-family:var(--mono);font-weight:700;font-size:.8rem;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .gate-box{background:#F1EBDB;border-radius:12px;padding:14px 16px;font-size:.88rem;margin-top:10px;}
+  .btn{display:inline-block;padding:13px 24px;border-radius:10px;font-weight:700;font-size:.95rem;cursor:pointer;border:1px solid transparent;font-family:var(--sans);text-decoration:none;}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),#d9ac54);color:var(--ink-2);}
+  .cta-row{text-align:center;margin-top:26px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-bar"><div class="badge">GUIDE</div><a href="index.html" class="btn-outline">🏠 الرئيسية</a></div>
+  <h1>كيف تستخدم هذه الدورة</h1>
+  <p>دليل سريع لكل رمز وفكرة ستقابلها أثناء رحلتك — اقرأه مرة واحدة، وستفهم كل شيء بعدها.</p>
+
+  <div class="section-card">
+    <h2>ماذا تعني الأيقونات؟</h2>
+    <div class="icon-row">
+      <div class="icon-box">🔊</div>
+      <div class="icon-text"><strong>استماع</strong><span>اضغط لسماع الكلمة أو الجملة بصوت حقيقي (أو صوت المتصفح إن لم يتوفر الصوت الحقيقي بعد)</span></div>
+    </div>
+    <div class="icon-row">
+      <div class="icon-box">✏️</div>
+      <div class="icon-text"><strong>الكتابة</strong><span>اكتب الكلمة التي تسمعها بنفسك، دون أن تراها مكتوبة أولاً</span></div>
+    </div>
+    <div class="icon-row">
+      <div class="icon-box">⏺</div>
+      <div class="icon-text"><strong>التسجيل</strong><span>تدريب اختياري بالكامل — سجّل صوتك وأنت تقرأ، فقط للتدرّب على النطق</span></div>
+    </div>
+    <div class="icon-row">
+      <div class="icon-box">🏠</div>
+      <div class="icon-text"><strong>الرئيسية</strong><span>يعيدك لقائمة كل الدروس في أي وقت</span></div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2>خطوات كل درس حرف</h2>
+    <ol class="steps-list">
+      <li><strong>تعرّف على الحرف</strong> — تعرّف على كل أصوات الحرف وكلماته، مع ترجمة عربية لكل كلمة</li>
+      <li><strong>اختر الصوت الصحيح</strong> — تمرين استماع: اختر الصوت الصحيح لكل كلمة، ويمكنك المحاولة أكثر من مرة</li>
+      <li><strong>تكوين الكلمات</strong> — استمع واكتب الكلمة بنفسك من الصوت وحده</li>
+      <li><strong>اقرأها</strong> — جمل حقيقية باستخدام كلمات الدرس، مع تسجيل صوتي اختياري</li>
+    </ol>
+    <p>يمكنك التنقّل بين هذه الأقسام الأربعة بحرية في أي وقت عبر الشريط الصغير أعلى كل درس — لست مضطراً للسير بترتيب واحد فقط.</p>
+  </div>
+
+  <div class="section-card">
+    <h2>ما معنى "بوابة الإتقان"؟</h2>
+    <p>في نهاية كل حرف، تحتاج تحقيق <strong>80% فأكثر</strong> في تمريني "اختيار الصوت" و"تكوين الكلمات" معاً لإنهاء الحرف بنجاح.</p>
+    <div class="gate-box">
+      💡 القراءة والتسجيل الصوتي <strong>لا يدخلان في هذا الحساب</strong> — فهما تدريب حر تماماً، لأننا لا نستطيع بعد تقييم دقة النطق آلياً.
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2>هل يُحفظ تقدّمي؟</h2>
+    <p>نعم — إن أغلقت الصفحة في منتصف درس، سيحفظ المتصفح مكانك تلقائياً، وعند العودة ستكمل من حيث توقفت بدلاً من البداية. الحروف التي تُنهيها بنجاح تظهر بلون مختلف في شبكة الحروف بالصفحة الرئيسية.</p>
+  </div>
+
+  <div class="cta-row">
+    <a href="index.html#lettersGrid" class="btn btn-gold">عرض شبكة الحروف والبدء ←</a>
+  </div>
+</div>
+</body>
+</html>

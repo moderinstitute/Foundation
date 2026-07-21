@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern Academic Institute — English &amp; Computer Science</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C2B39;
+    --ink-2:#111C26;
+    --ink-mid:#31465A;
+    --chalk:#F5F1E6;
+    --chalk-dim:#E4DBC6;
+    --gold:#C99A3E;
+    --gold-soft:#E7C67B;
+    --terminal:#5FBF8A;
+    --pencil:#B24A36;
+    --serif: 'IBM Plex Serif', serif;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:var(--sans);
+    background:var(--chalk);
+    color:var(--ink);
+    line-height:1.55;
+  }
+  a{color:inherit;}
+  img,svg{display:block;max-width:100%;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px;}
+  ::selection{background:var(--gold-soft);}
+
+  /* NAV */
+  header.site{
+    position:sticky;top:0;z-index:50;
+    background:rgba(245,241,230,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--chalk-dim);
+  }
+  nav.wrap{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-weight:700;font-size:1.18rem;letter-spacing:.2px;}
+  .brand .mark{
+    width:34px;height:34px;border-radius:4px;
+    background:var(--ink);
+    color:var(--chalk);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:.8rem;font-weight:600;
+  }
+  .navlinks{display:flex;gap:28px;font-size:.94rem;font-weight:500;}
+  .navlinks a{text-decoration:none;opacity:.8;transition:opacity .15s;}
+  .navlinks a:hover{opacity:1;}
+  .btn{
+    display:inline-block;padding:10px 20px;border-radius:3px;
+    font-family:var(--sans);font-weight:600;font-size:.92rem;
+    text-decoration:none;cursor:pointer;border:1px solid transparent;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-gold{background:var(--gold);color:var(--ink-2);}
+  .btn-gold:hover{box-shadow:0 6px 16px rgba(201,154,62,.35);}
+  .btn-outline{border-color:var(--ink);color:var(--ink);background:transparent;}
+  .btn-ghost-light{border-color:rgba(245,241,230,.5);color:var(--chalk);}
+
+  /* HERO */
+  section.hero{
+    background:radial-gradient(1200px 500px at 15% -10%, #22344450 0%, transparent 60%), var(--ink);
+    color:var(--chalk);
+    padding:88px 0 70px;
+    overflow:hidden;
+    position:relative;
+  }
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;}
+  .eyebrow{
+    font-family:var(--mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--terminal);margin-bottom:18px;display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:'';width:22px;height:1px;background:var(--terminal);display:inline-block;}
+  h1.hero-title{
+    font-family:var(--serif);font-weight:700;font-size:clamp(2.1rem,4vw,3.15rem);
+    line-height:1.12;margin:0 0 22px;letter-spacing:-.01em;
+  }
+  h1.hero-title em{color:var(--gold-soft);font-style:normal;}
+  .hero p.lede{font-size:1.08rem;color:var(--chalk-dim);max-width:46ch;margin:0 0 30px;}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;}
+
+  /* signature visual: sentence diagrammed like code */
+  .parse-card{
+    background:var(--ink-2);border:1px solid #2b3d4d;border-radius:8px;
+    padding:26px 24px 22px;font-family:var(--mono);font-size:.92rem;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.5);
+  }
+  .parse-card .filebar{display:flex;gap:6px;margin-bottom:18px;}
+  .filebar span{width:9px;height:9px;border-radius:50%;background:#3b4f61;}
+  .sentence-line{color:var(--chalk);font-size:1.05rem;margin-bottom:10px;letter-spacing:.01em;}
+  .tok{position:relative;display:inline-block;margin:0 2px;padding-bottom:2px;}
+  .tok.subj{color:var(--terminal);}
+  .tok.verb{color:var(--gold-soft);}
+  .tok.obj{color:#9db8d6;}
+  .tag-row{display:flex;gap:2px;color:#5c7285;font-size:.72rem;margin-bottom:22px;flex-wrap:wrap;}
+  .tag-row span{opacity:.85;}
+  .code-line{color:#8aa0b3;}
+  .code-line .kw{color:var(--gold-soft);}
+  .code-line .fn{color:var(--terminal);}
+  .code-line .str{color:#c9927e;}
+  .comment{color:#4d6274;}
+  .diagram-note{
+    margin-top:16px;border-top:1px dashed #2b3d4d;padding-top:14px;
+    font-family:var(--sans);color:#9fb0bf;font-size:.82rem;
+  }
+
+  /* PROGRAMS */
+  section.programs{padding:96px 0 40px;}
+  .section-head{max-width:640px;margin:0 0 48px;}
+  .section-head .eyebrow{color:var(--pencil);}
+  .section-head .eyebrow::before{background:var(--pencil);}
+  h2{font-family:var(--serif);font-size:clamp(1.7rem,2.6vw,2.3rem);margin:0 0 14px;letter-spacing:-.01em;}
+  .section-head p{color:#4a5a68;font-size:1.02rem;max-width:56ch;}
+
+  .track-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+  .track-card{
+    border:1px solid #d9cfb4;border-radius:10px;padding:34px 30px;background:#FAF7EF;
+    display:flex;flex-direction:column;gap:18px;
+  }
+  .track-card.cs{background:var(--ink);color:var(--chalk);border-color:var(--ink);}
+  .track-label{font-family:var(--mono);font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;opacity:.65;}
+  .track-card h3{font-family:var(--serif);font-size:1.5rem;margin:0;}
+  .skill-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+  .pill{
+    font-size:.8rem;font-weight:600;padding:6px 12px;border-radius:20px;
+    border:1px solid #cbbf9c;font-family:var(--sans);
+  }
+  .track-card.cs .pill{border-color:#3a4f61;color:var(--chalk-dim);}
+  .track-card p.desc{color:#5c6b78;font-size:.95rem;margin:0;}
+  .track-card.cs p.desc{color:#b9c6d1;}
+  .track-card ul{margin:0;padding-left:18px;font-size:.92rem;color:#4a5a68;}
+  .track-card.cs ul{color:#c3cfd9;}
+  .track-card ul li{margin-bottom:6px;}
+
+  /* HOW IT WORKS */
+  section.how{padding:70px 0 90px;background:#EFE9D9;}
+  .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative;margin-top:50px;}
+  .flow::before{
+    content:'';position:absolute;top:26px;left:6%;right:6%;height:1px;
+    background:repeating-linear-gradient(to right, #b8ab86 0 8px, transparent 8px 16px);
+  }
+  .flow-step{position:relative;text-align:center;padding:0 10px;}
+  .flow-step .num{
+    width:52px;height:52px;border-radius:50%;background:var(--chalk);
+    border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-weight:600;margin:0 auto 14px;position:relative;z-index:2;
+    font-size:.95rem;
+  }
+  .flow-step h4{font-size:.98rem;margin:0 0 6px;font-family:var(--sans);font-weight:700;}
+  .flow-step p{font-size:.82rem;color:#5c6b78;margin:0;}
+  .recycle-note{
+    margin-top:44px;background:var(--ink);color:var(--chalk-dim);border-radius:10px;
+    padding:22px 26px;font-size:.94rem;display:flex;gap:16px;align-items:flex-start;
+  }
+  .recycle-note .icon{font-family:var(--mono);color:var(--terminal);font-size:1.3rem;flex-shrink:0;}
+
+  /* DEMO LESSON */
+  section.demo{padding:96px 0;}
+  .demo-shell{
+    border:1px solid #d9cfb4;border-radius:12px;overflow:hidden;background:#FAF7EF;
+  }
+  .demo-tabs{display:flex;border-bottom:1px solid #d9cfb4;background:#F1EBDB;}
+  .demo-tab{
+    flex:1;padding:16px 10px;text-align:center;font-weight:600;font-size:.88rem;
+    cursor:pointer;color:#8a7d5c;border-right:1px solid #d9cfb4;user-select:none;
+    transition:background .15s, color .15s;
+  }
+  .demo-tab:last-child{border-right:none;}
+  .demo-tab.active{background:#FAF7EF;color:var(--ink);}
+  .demo-tab .n{font-family:var(--mono);margin-right:6px;color:var(--gold);}
+  .demo-body{padding:36px;min-height:340px;}
+  .demo-panel{display:none;}
+  .demo-panel.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  .word-bank-strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px;}
+  .wb-chip{
+    font-family:var(--mono);font-size:.78rem;padding:5px 11px;border-radius:4px;
+    background:#EDE4CB;border:1px solid #d9cfb4;color:#6b5f3e;
+  }
+
+  .vocab-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;}
+  .vocab-card{
+    perspective:800px;height:150px;cursor:pointer;
+  }
+  .vocab-inner{
+    position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;
+  }
+  .vocab-card.flipped .vocab-inner{transform:rotateY(180deg);}
+  .vocab-face{
+    position:absolute;inset:0;backface-visibility:hidden;border-radius:8px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:14px;text-align:center;border:1px solid #d9cfb4;
+  }
+  .vocab-front{background:var(--ink);color:var(--chalk);}
+  .vocab-front .w{font-family:var(--serif);font-size:1.25rem;font-weight:700;}
+  .vocab-front .hint{font-family:var(--mono);font-size:.7rem;color:var(--terminal);margin-top:8px;}
+  .vocab-back{background:#F1EBDB;transform:rotateY(180deg);}
+  .vocab-back .def{font-size:.85rem;color:#4a4132;margin-bottom:8px;}
+  .vocab-back .ex{font-size:.78rem;font-style:italic;color:#8a7d5c;}
+
+  .fib-sentence{
+    font-size:1.05rem;margin-bottom:20px;padding:16px 18px;background:#F1EBDB;
+    border-radius:8px;border:1px solid #d9cfb4;
+  }
+  .fib-sentence select{
+    font-family:var(--mono);font-size:.95rem;padding:3px 8px;border-radius:4px;
+    border:1px solid var(--gold);background:#fff;color:var(--ink);font-weight:600;
+  }
+  .check-row{display:flex;align-items:center;gap:14px;margin-top:22px;}
+  #fibResult, #matchResult{font-size:.9rem;font-weight:600;}
+
+  .match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
+  .match-col h5{font-family:var(--mono);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:#8a7d5c;margin:0 0 12px;}
+  .match-item{
+    padding:12px 14px;margin-bottom:8px;border-radius:6px;border:1px solid #d9cfb4;
+    background:#fff;cursor:pointer;font-size:.92rem;transition:all .15s;
+  }
+  .match-item.selected{border-color:var(--gold);background:#FCF3DE;}
+  .match-item.correct{border-color:var(--terminal);background:#e8f6ee;}
+  .match-item.wrong{border-color:var(--pencil);background:#fbeae6;animation:shake .3s;}
+  @keyframes shake{25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+
+  /* STATS */
+  section.stats{background:var(--ink);color:var(--chalk);padding:70px 0;}
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;text-align:center;}
+  .stat-num{font-family:var(--serif);font-size:2.4rem;color:var(--gold-soft);font-weight:700;}
+  .stat-label{font-size:.85rem;color:var(--chalk-dim);margin-top:6px;}
+
+  /* CTA */
+  section.cta{padding:100px 0;text-align:center;}
+  section.cta h2{margin-bottom:14px;}
+  section.cta p{color:#5c6b78;max-width:50ch;margin:0 auto 30px;}
+  .cta-form{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  .cta-form input{
+    padding:13px 16px;border-radius:3px;border:1px solid #cbbf9c;min-width:280px;font-family:var(--sans);
+  }
+
+  footer{background:var(--ink-2);color:#8598a6;padding:44px 0;font-size:.85rem;}
+  .footer-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;align-items:center;}
+  .footer-links{display:flex;gap:20px;}
+  .footer-links a{text-decoration:none;color:#8598a6;}
+
+  @media (max-width:860px){
+    .hero-grid{grid-template-columns:1fr;}
+    .track-grid{grid-template-columns:1fr;}
+    .flow{grid-template-columns:1fr;gap:26px;}
+    .flow::before{display:none;}
+    .stat-grid{grid-template-columns:1fr 1fr;gap:24px;}
+    .match-wrap{grid-template-columns:1fr;}
+    .navlinks{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <nav class="wrap">
+    <div class="brand"><span class="mark">MAI</span> Modern Academic Institute</div>
+    <div class="navlinks">
+      <a href="#programs">Programs</a>
+      <a href="#how">How lessons work</a>
+      <a href="#demo">Try a lesson</a>
+      <a href="#enroll">Enroll</a>
+    </div>
+    <a href="#enroll" class="btn btn-outline">Enroll now</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">English &amp; Computer Science, together</div>
+      <h1 class="hero-title">Learn a language the way you learn to <em>code</em> — build it piece by piece, and test every piece as you go.</h1>
+      <p class="lede">Modern Academic Institute teaches reading, writing, speaking and listening with the same rigor our Computer Science courses bring to logic and syntax — every new word gets used, reused, and tested until it sticks.</p>
+      <div class="hero-cta">
+        <a href="#demo" class="btn btn-gold">Try a live lesson</a>
+        <a href="#programs" class="btn btn-ghost-light">See both programs</a>
+      </div>
+    </div>
+    <div class="parse-card">
+      <div class="filebar"><span></span><span></span><span></span></div>
+      <div class="sentence-line">
+        <span class="tok subj">She</span> <span class="tok verb">debugged</span> the <span class="tok obj">sentence</span> before she shipped it.
+      </div>
+      <div class="tag-row">
+        <span>[SUBJ]&nbsp;&nbsp;</span><span>[V·past]&nbsp;&nbsp;</span><span>[DET]&nbsp;&nbsp;</span><span>[OBJ]&nbsp;&nbsp;</span><span>[CONJ]&nbsp;&nbsp;</span><span>[SUBJ]&nbsp;&nbsp;</span><span>[V·past]&nbsp;&nbsp;</span><span>[PRON]</span>
+      </div>
+      <div class="code-line"><span class="comment">// same sentence, read like a program</span></div>
+      <div class="code-line"><span class="kw">function</span> <span class="fn">reviseSentence</span>(draft) {</div>
+      <div class="code-line">&nbsp;&nbsp;<span class="kw">return</span> draft.<span class="fn">fix</span>(<span class="str">"clarity"</span>);</div>
+      <div class="code-line">}</div>
+      <div class="diagram-note">This is the idea behind the site's whole design: grammar and syntax are close cousins — we teach them side by side.</div>
+    </div>
+  </div>
+</section>
+
+<section class="programs" id="programs">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Two programs, one method</div>
+      <h2>Choose your track</h2>
+      <p>Every course — language or code — is built from small units you can actually finish, with constant, low-stakes practice instead of one big test at the end.</p>
+    </div>
+    <div class="track-grid">
+      <div class="track-card">
+        <div class="track-label">Program 01</div>
+        <h3>English Language</h3>
+        <p class="desc">General &amp; exam-prep English built around all four skills in every unit — not just vocabulary lists.</p>
+        <div class="skill-pills">
+          <span class="pill">Reading</span><span class="pill">Writing</span><span class="pill">Speaking</span><span class="pill">Listening</span>
+        </div>
+        <ul>
+          <li>New vocabulary introduced in context, then recycled across every exercise type in the unit</li>
+          <li>Short writing tasks reviewed by a teacher, not just auto-graded</li>
+          <li>Guided speaking prompts with recorded playback for self-review</li>
+        </ul>
+      </div>
+      <div class="track-card cs">
+        <div class="track-label">Program 02</div>
+        <h3>Computer Science</h3>
+        <p class="desc">Project-first courses — you ship something working at the end of every module, not just a quiz score.</p>
+        <div class="skill-pills">
+          <span class="pill">Logic</span><span class="pill">Syntax</span><span class="pill">Debugging</span><span class="pill">Projects</span>
+        </div>
+        <ul>
+          <li>In-browser coding practice with instant feedback</li>
+          <li>Concepts reused across projects so nothing is learned once and forgotten</li>
+          <li>A portfolio project at the end of each track, not just a certificate</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Our teaching method</div>
+      <h2>How one English lesson actually works</h2>
+      <p>Research on vocabulary retention is clear: a word needs to reappear many times, in different forms, before it sticks. So every lesson is built around a small set of words that travels through the whole unit.</p>
+    </div>
+    <div class="flow">
+      <div class="flow-step"><div class="num">1</div><h4>Meet the words</h4><p>5–7 new words, introduced with meaning, sound, and an example</p></div>
+      <div class="flow-step"><div class="num">2</div><h4>Read &amp; listen</h4><p>The same words appear in a short text and audio clip</p></div>
+      <div class="flow-step"><div class="num">3</div><h4>Fill in the blanks</h4><p>Practice choosing the right word in context</p></div>
+      <div class="flow-step"><div class="num">4</div><h4>Match &amp; recall</h4><p>Match words to meanings under light time pressure</p></div>
+      <div class="flow-step"><div class="num">5</div><h4>Speak &amp; write</h4><p>Use the same words in your own sentence or short recording</p></div>
+    </div>
+    <div class="recycle-note">
+      <div class="icon">↻</div>
+      <div><strong>The point isn't the exercises — it's the repetition.</strong> The same 5–7 words follow the learner through reading, listening, writing and speaking in one unit, then resurface again in later review lessons. That's what makes them stick, not any single clever activity.</div>
+    </div>
+  </div>
+</section>
+
+<section class="demo" id="demo">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">See it in action</div>
+      <h2>Try a real 3-step practice loop</h2>
+      <p>This is a working demo — the same five words from a "Workplace English" unit follow you through all three steps below, exactly as a student would experience it.</p>
+    </div>
+
+    <div class="demo-shell">
+      <div class="demo-tabs">
+        <div class="demo-tab active" data-panel="learn"><span class="n">01</span>Meet the words</div>
+        <div class="demo-tab" data-panel="fib"><span class="n">02</span>Fill in the blanks</div>
+        <div class="demo-tab" data-panel="match"><span class="n">03</span>Match &amp; recall</div>
+      </div>
+      <div class="demo-body">
+
+        <div class="word-bank-strip">
+          <span class="wb-chip">colleague</span><span class="wb-chip">deadline</span><span class="wb-chip">punctual</span><span class="wb-chip">feedback</span><span class="wb-chip">collaborate</span>
+        </div>
+
+        <div class="demo-panel active" id="panel-learn">
+          <p style="font-size:.88rem;color:#8a7d5c;margin-top:-10px;margin-bottom:20px;">Click a card to reveal its meaning and an example.</p>
+          <div class="vocab-grid" id="vocabGrid"></div>
+        </div>
+
+        <div class="demo-panel" id="panel-fib">
+          <div id="fibList"></div>
+          <div class="check-row">
+            <button class="btn btn-gold" onclick="checkFIB()">Check my answers</button>
+            <span id="fibResult"></span>
+          </div>
+        </div>
+
+        <div class="demo-panel" id="panel-match">
+          <p style="font-size:.88rem;color:#8a7d5c;margin-top:-10px;">Click a word, then click its matching definition.</p>
+          <div class="match-wrap">
+            <div class="match-col"><h5>Words</h5><div id="matchWords"></div></div>
+            <div class="match-col"><h5>Definitions</h5><div id="matchDefs"></div></div>
+          </div>
+          <div class="check-row"><span id="matchResult"></span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="wrap stat-grid">
+    <div><div class="stat-num">8–12</div><div class="stat-label">exposures typically needed for a word to stick in long-term memory</div></div>
+    <div><div class="stat-num">4/4</div><div class="stat-label">skills covered in every English unit — not just reading</div></div>
+    <div><div class="stat-num">1</div><div class="stat-label">shipped project at the end of every CS module</div></div>
+    <div><div class="stat-num">100%</div><div class="stat-label">of writing &amp; speaking tasks reviewed by a real teacher</div></div>
+  </div>
+</section>
+
+<section class="cta" id="enroll">
+  <div class="wrap">
+    <h2>Ready to see the full course catalog?</h2>
+    <p>This is a working prototype of the Modern Academic Institute site. Leave your email and we'll follow up when enrollment opens — no live signup is connected yet.</p>
+    <div class="cta-form">
+      <input type="email" placeholder="you@example.com">
+      <button class="btn btn-gold">Notify me</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-row">
+    <div>© 2026 Modern Academic Institute — prototype site</div>
+    <div class="footer-links"><a href="#programs">Programs</a><a href="#how">Method</a><a href="#demo">Demo lesson</a></div>
+  </div>
+</footer>
+
+<script>
+const WORDS = [
+  {w:"colleague", def:"A person you work with.", ex:"My colleague helped me finish the report."},
+  {w:"deadline", def:"The time by which something must be done.", ex:"The deadline for the project is Friday."},
+  {w:"punctual", def:"Arriving or doing things at the agreed time.", ex:"She is always punctual for meetings."},
+  {w:"feedback", def:"Comments on how well something was done.", ex:"The teacher gave useful feedback on my essay."},
+  {w:"collaborate", def:"To work together with others on something.", ex:"The two teams collaborated on the new app."}
+];
+
+// Panel switching
+document.querySelectorAll('.demo-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.demo-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.demo-panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-'+tab.dataset.panel).classList.add('active');
+  });
+});
+
+// Step 1: vocab cards
+const vocabGrid = document.getElementById('vocabGrid');
+WORDS.forEach(item=>{
+  const card = document.createElement('div');
+  card.className = 'vocab-card';
+  card.innerHTML = `
+    <div class="vocab-inner">
+      <div class="vocab-face vocab-front">
+        <div class="w">${item.w}</div>
+        <div class="hint">tap to reveal</div>
+      </div>
+      <div class="vocab-face vocab-back">
+        <div class="def">${item.def}</div>
+        <div class="ex">“${item.ex}”</div>
+      </div>
+    </div>`;
+  card.addEventListener('click', ()=> card.classList.toggle('flipped'));
+  vocabGrid.appendChild(card);
+});
+
+// Step 2: fill in the blanks
+const fibList = document.getElementById('fibList');
+const fibData = [
+  {blank:"colleague", sentence:"I asked a ___ to review my report before I sent it."},
+  {blank:"deadline", sentence:"We have to finish this by the ___ on Friday."},
+  {blank:"punctual", sentence:"He's always ___, so the meeting started right on time."},
+  {blank:"feedback", sentence:"Thanks for the ___ — I'll fix the introduction."},
+  {blank:"collaborate", sentence:"The two departments agreed to ___ on the new project."}
+];
+fibData.forEach((item,i)=>{
+  const wrap = document.createElement('div');
+  wrap.className = 'fib-sentence';
+  const before = item.sentence.split('___')[0];
+  const after = item.sentence.split('___')[1];
+  wrap.innerHTML = `${before}<select data-idx="${i}" data-answer="${item.blank}">
+    <option value="">choose…</option>
+    ${WORDS.map(w=>`<option value="${w.w}">${w.w}</option>`).join('')}
+  </select>${after}`;
+  fibList.appendChild(wrap);
+});
+function checkFIB(){
+  let correct = 0;
+  document.querySelectorAll('#fibList select').forEach(sel=>{
+    if(sel.value === sel.dataset.answer){ correct++; sel.style.borderColor = '#5FBF8A'; }
+    else if(sel.value !== ""){ sel.style.borderColor = '#B24A36'; }
+  });
+  const result = document.getElementById('fibResult');
+  result.textContent = `${correct} / ${fibData.length} correct`;
+  result.style.color = correct === fibData.length ? '#3f8f63' : '#B24A36';
+}
+
+// Step 3: matching
+const matchWordsEl = document.getElementById('matchWords');
+const matchDefsEl = document.getElementById('matchDefs');
+let selectedWord = null, selectedDef = null, matchedCount = 0;
+
+const shuffledDefs = [...WORDS].sort(()=>Math.random()-0.5);
+
+WORDS.forEach(item=>{
+  const el = document.createElement('div');
+  el.className = 'match-item';
+  el.textContent = item.w;
+  el.dataset.word = item.w;
+  el.addEventListener('click', ()=>selectWord(el));
+  matchWordsEl.appendChild(el);
+});
+shuffledDefs.forEach(item=>{
+  const el = document.createElement('div');
+  el.className = 'match-item';
+  el.textContent = item.def;
+  el.dataset.word = item.w;
+  el.addEventListener('click', ()=>selectDef(el));
+  matchDefsEl.appendChild(el);
+});
+
+function selectWord(el){
+  if(el.classList.contains('correct')) return;
+  document.querySelectorAll('#matchWords .match-item').forEach(i=>i.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedWord = el;
+  tryMatch();
+}
+function selectDef(el){
+  if(el.classList.contains('correct')) return;
+  document.querySelectorAll('#matchDefs .match-item').forEach(i=>i.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedDef = el;
+  tryMatch();
+}
+function tryMatch(){
+  if(!selectedWord || !selectedDef) return;
+  if(selectedWord.dataset.word === selectedDef.dataset.word){
+    selectedWord.classList.remove('selected');
+    selectedDef.classList.remove('selected');
+    selectedWord.classList.add('correct');
+    selectedDef.classList.add('correct');
+    matchedCount++;
+    const result = document.getElementById('matchResult');
+    result.style.color = '#3f8f63';
+    result.textContent = matchedCount === WORDS.length ? `All matched! ${matchedCount}/${WORDS.length}` : `${matchedCount}/${WORDS.length} matched`;
+  } else {
+    selectedWord.classList.add('wrong');
+    selectedDef.classList.add('wrong');
+    setTimeout(()=>{
+      selectedWord.classList.remove('selected','wrong');
+      selectedDef.classList.remove('selected','wrong');
+    },400);
+  }
+  selectedWord = null;
+  selectedDef = null;
+}
+</script>
+
+</body>
+</html>

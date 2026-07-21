@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المعهد الأكاديمي الحديث — نسخة الاختبار</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C2B39; --ink-2:#111C26;
+    --chalk:#F5F1E6; --chalk-dim:#E4DBC6;
+    --gold:#C99A3E; --gold-soft:#E7C67B;
+    --terminal:#5FBF8A; --pencil:#B24A36;
+    --serif:'IBM Plex Serif',serif; --sans:'IBM Plex Sans',sans-serif; --mono:'IBM Plex Mono',monospace;
+    --arabic:'Noto Sans Arabic',sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--arabic);background:linear-gradient(180deg,#F7F3E9 0%,#F5F1E6 100%);color:var(--ink);direction:rtl;}
+  .wrap{max-width:800px;margin:0 auto;padding:40px 22px 90px;}
+  h1{font-family:var(--serif);font-size:1.6rem;margin:0 0 8px;}
+  h2{font-family:var(--serif);font-size:1.2rem;margin:0 0 4px;}
+  p{color:#4a5a68;line-height:1.7;}
+  .badge{display:inline-block;font-family:var(--mono);font-size:.72rem;color:var(--pencil);background:#fbeae6;border-radius:20px;padding:5px 14px;margin-bottom:12px;direction:ltr;}
+  .note-box{margin:20px 0;padding:16px 18px;border-radius:12px;background:var(--ink);color:var(--chalk-dim);font-size:.83rem;line-height:1.7;}
+
+  .mini-links{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0 30px;font-size:.85rem;}
+  .mini-links a{color:var(--pencil);text-decoration:none;border-bottom:1px dashed var(--pencil);}
+
+  .foundation-section{
+    background:#fff;border:1px solid #ecdfc2;border-radius:22px;padding:28px 24px;margin-bottom:30px;
+    box-shadow:0 8px 30px -10px rgba(60,50,20,.1);
+  }
+  .foundation-header{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+  .foundation-icon{font-size:1.8rem;}
+  .cta-row{margin:18px 0 26px;text-align:center;}
+  .btn{display:inline-block;padding:14px 28px;border-radius:12px;font-weight:700;font-size:1rem;cursor:pointer;border:1px solid transparent;font-family:var(--sans);text-decoration:none;}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),#d9ac54);color:var(--ink-2);box-shadow:0 8px 20px -6px rgba(201,154,62,.5);}
+  .btn-outline{border:1.5px solid #d5c9a3;color:var(--ink);background:transparent;font-size:.85rem;padding:9px 16px;}
+
+  .subsection-title{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#8a7d5c;margin:22px 0 10px;}
+
+  .letters-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;direction:ltr;}
+  .letter-tile{
+    aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:10px;
+    background:var(--ink);color:var(--chalk);font-family:var(--serif);font-weight:700;font-size:1.1rem;
+    text-decoration:none;transition:transform .12s ease;
+  }
+  .letter-tile:hover{transform:translateY(-2px);background:var(--pencil);}
+  .closure-tile{
+    grid-column:span 2;background:linear-gradient(135deg,var(--gold),#d9ac54);color:var(--ink-2);
+    font-size:.85rem;font-weight:700;display:flex;align-items:center;justify-content:center;text-align:center;
+    border-radius:10px;text-decoration:none;padding:4px;
+  }
+
+  .mini-card-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .mini-card{
+    display:flex;align-items:center;gap:10px;background:#FDFBF5;border:1px solid #ecdfc2;border-radius:12px;
+    padding:12px 14px;text-decoration:none;color:var(--ink);font-size:.85rem;font-weight:600;
+  }
+  .mini-card .ic{font-size:1.2rem;}
+
+  .unit-section{margin-top:10px;}
+  .lesson-card{
+    display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #ecdfc2;border-radius:14px;
+    padding:16px 18px;text-decoration:none;color:var(--ink);box-shadow:0 4px 14px -6px rgba(60,50,20,.08);
+  }
+  .lesson-title{font-family:var(--serif);font-weight:700;font-size:1.05rem;}
+  .lesson-desc{font-size:.85rem;color:#8a7d5c;margin-top:2px;}
+  .arrow{font-family:var(--mono);color:var(--gold);font-size:1.1rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="badge">TESTING VERSION · نسخة الاختبار</div>
+  <h1>المعهد الأكاديمي الحديث</h1>
+  <p>جرّب أي قسم أدناه — لا يحتاج إنترنت بعد التحميل الأول، ويعمل على الهاتف والحاسوب.</p>
+
+  <div class="note-box">
+    <strong>ملاحظات قبل أن تبدأ:</strong><br>
+    الأيقونات رسومات مبسطة/رموز تعبيرية مؤقتة · لا يوجد حفظ تلقائي للتقدم بين الجلسات · الصوت الحقيقي قيد الإضافة تدريجياً (يعود لصوت المتصفح إن لم يجد الملف).
+  </div>
+
+  <div class="mini-links">
+    <a href="home.html">الصفحة الرئيسية التسويقية</a>
+    <a href="registration.html">التسجيل</a>
+    <a href="placement-test.html">اختبار تحديد المستوى</a>
+  </div>
+
+  <div class="foundation-section">
+    <div class="foundation-header"><span class="foundation-icon">🧱</span><h2>Foundation — وحدة الأساسيات</h2></div>
+    <p style="margin-top:0;">رحلة كاملة من الصفر: القراءة، الأبجدية، وكل الأصوات — من المقدمة إلى خاتمة الوحدة.</p>
+
+    <div class="cta-row">
+      <a href="foundation-intro.html" class="btn btn-gold">ابدأ رحلة Foundation ←</a>
+      <div style="margin-top:10px;"><a href="how-to-use.html" style="font-size:.85rem;color:var(--pencil);">📘 كيف تستخدم هذه الدورة؟</a></div>
+    </div>
+
+    <div class="subsection-title">الحروف (اضغط لبدء أي حرف مباشرة)</div>
+    <div class="letters-grid" id="lettersGrid"></div>
+
+    <div class="subsection-title">مراجعات ممتعة</div>
+    <div class="mini-card-row">
+      <a href="review-a-f.html" class="mini-card"><span class="ic">🎮</span> A-F · لعبة ذاكرة</a>
+      <a href="review-g-k.html" class="mini-card"><span class="ic">🔍</span> G-K · بحث عن كلمات</a>
+      <a href="review-l-p.html" class="mini-card"><span class="ic">🔤</span> L-P · خمّن الكلمة</a>
+      <a href="review-q-u.html" class="mini-card"><span class="ic">✏️</span> Q-U · كلمات متقاطعة</a>
+      <a href="review-v-z.html" class="mini-card"><span class="ic">⏱</span> V-Z · مطابقة سريعة</a>
+      <a href="closure.html" class="mini-card"><span class="ic">🎉</span> خاتمة الوحدة</a>
+    </div>
+
+    <div class="subsection-title">مراجع دائمة</div>
+    <div class="mini-card-row">
+      <a href="glossary.html" class="mini-card"><span class="ic">📖</span> قاموس الوحدة</a>
+      <a href="sound-map.html" class="mini-card"><span class="ic">🔊</span> خريطة الأصوات</a>
+    </div>
+  </div>
+
+  <div class="unit-section">
+    <div class="subsection-title">الوحدة القادمة</div>
+    <a class="lesson-card" href="unit1-hello-meeting-people.html">
+      <div style="flex:1;">
+        <div class="lesson-title">Hello — Meeting People</div>
+        <div class="lesson-desc">تحية وتعارف، بعد إتقان أساسيات الحروف</div>
+      </div>
+      <div class="arrow">←</div>
+    </a>
+  </div>
+</div>
+
+<script>
+var letters = "abcdefghijklmnopqrstuvwxyz".split('');
+var completedLetters = [];
+try{ completedLetters = JSON.parse(localStorage.getItem('completedLetters') || '[]'); }catch(e){}
+var grid = document.getElementById('lettersGrid');
+letters.forEach(function(l){
+  var a = document.createElement('a');
+  a.className = 'letter-tile';
+  a.href = 'letter-engine.html?id=' + l;
+  a.textContent = l.toUpperCase();
+  if(completedLetters.indexOf(l) !== -1){
+    a.style.background = 'var(--terminal)';
+    a.title = 'مكتمل ✓';
+  }
+  grid.appendChild(a);
+});
+</script>
+</body>
+</html>

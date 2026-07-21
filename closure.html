@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>خاتمة وحدة الأساسيات — المعهد الأكاديمي الحديث</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1C2B39;--ink-2:#111C26;--chalk:#F5F1E6;--chalk-dim:#E4DBC6;--gold:#C99A3E;--gold-soft:#E7C67B;--terminal:#5FBF8A;--pencil:#B24A36;--serif:'IBM Plex Serif',serif;--sans:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace;--arabic:'Noto Sans Arabic',sans-serif;--ipa:'IBM Plex Mono','Noto Sans',monospace;}
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--sans);background:linear-gradient(180deg,#F7F3E9 0%,#F5F1E6 100%);color:var(--ink);}
+  .wrap{max-width:680px;margin:0 auto;padding:30px 20px 80px;}
+  .ar{direction:rtl;text-align:right;font-family:var(--arabic);}
+  .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .badge{font-family:var(--mono);font-weight:700;font-size:.8rem;color:var(--chalk);background:var(--ink);border-radius:8px;padding:6px 12px;}
+  .btn-outline{border-color:#d5c9a3;color:var(--ink);background:transparent;padding:6px 12px;font-size:.78rem;border-radius:10px;border:1.5px solid #d5c9a3;text-decoration:none;font-family:var(--sans);}
+  .hero{text-align:center;padding:20px 0 30px;}
+  .hero h1{font-family:var(--serif);font-size:1.8rem;margin:10px 0 8px;}
+  .hero p{color:#4a5a68;font-size:1rem;max-width:46ch;margin:0 auto;}
+  .trophy{font-size:3.4rem;}
+  .intro-card{background:#fff;border:1px solid #ecdfc2;border-radius:16px;padding:22px;margin:20px 0;box-shadow:0 4px 18px -6px rgba(60,50,20,.06);}
+  .pair-card{background:#fff;border:1px solid #ecdfc2;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 4px 18px -6px rgba(60,50,20,.06);}
+  .pair-title{font-family:var(--serif);font-weight:700;font-size:1.3rem;text-align:center;margin-bottom:4px;direction:ltr;color:var(--pencil);}
+  .pair-sub{text-align:center;font-size:.78rem;color:#8a7d5c;font-family:var(--mono);margin-bottom:14px;direction:ltr;}
+  .versions{display:grid;grid-template-columns:1fr 1fr;gap:12px;direction:ltr;}
+  .version{background:#FDFBF5;border:1px solid #e6dcc2;border-radius:12px;padding:14px;text-align:center;}
+  .version .role{font-family:var(--mono);font-size:.68rem;color:var(--terminal);text-transform:uppercase;margin-bottom:6px;}
+  .version .sentence{font-family:var(--serif);font-size:.92rem;margin-bottom:8px;min-height:44px;}
+  .version .ipa{font-family:var(--ipa);font-size:.85rem;color:var(--pencil);margin-bottom:8px;}
+  .play-btn{font-family:var(--mono);font-size:.72rem;border:1px solid var(--terminal);color:var(--terminal);background:#f2fbf6;border-radius:20px;padding:5px 12px;cursor:pointer;}
+  .final-card{text-align:center;padding:30px;background:#e8f6ee;border:1px solid #bfe3cd;border-radius:18px;margin-top:26px;}
+  .btn{display:inline-block;padding:13px 24px;border-radius:10px;font-weight:600;font-size:.95rem;cursor:pointer;border:1px solid transparent;font-family:var(--sans);text-decoration:none;}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),#d9ac54);color:var(--ink-2);}
+  .note-box{margin-top:16px;padding:14px 16px;border-radius:12px;background:var(--ink);color:var(--chalk-dim);font-size:.8rem;line-height:1.6;text-align:right;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-bar"><div class="badge">🎉 CLOSURE</div><a href="index.html" class="btn-outline">🏠 الرئيسية</a></div>
+
+  <div class="hero">
+    <div class="trophy">🏆</div>
+    <h1 class="ar">أكملت وحدة الأساسيات بالكامل!</h1>
+    <p class="ar">من الحرف A إلى Z — رحلة كاملة عبر كل أصوات الإنجليزية وأنماطها واستثناءاتها.</p>
+  </div>
+
+  <div class="intro-card">
+    <p class="ar" style="margin:0;"><strong>هل تعلم أن بعض الكلمات الإنجليزية تُكتب بنفس الطريقة تماماً، لكن تُنطق بشكل مختلف حسب معناها؟</strong> تُسمى هذه الكلمات <span style="direction:ltr;display:inline-block;font-family:var(--mono);">heteronyms</span>. إليك أربعة أمثلة — استمع للفرق بنفسك.</p>
+  </div>
+
+  <div id="pairsContainer"></div>
+
+  <div class="final-card">
+    <h2 style="margin-top:0;font-family:var(--serif);">هذا مجرد تذوّق!</h2>
+    <p class="ar">ستتعمّق في هذه الأسرار وأكثر منها في الوحدات القادمة — بعد أن أتقنت الآن الأساس الحقيقي الذي يُبنى عليه كل شيء لاحقاً.</p>
+    <a href="index.html" class="btn btn-gold">العودة للقائمة الرئيسية ←</a>
+  </div>
+
+  <div class="note-box ar">ملاحظة: نطق المتصفح الآلي قد لا يُميّز دائماً بدقة بين النطقين المختلفين لنفس الكلمة — هذا طبيعي، والفرق الحقيقي سيتضح أكثر مع صوت طبيعي حقيقي لاحقاً.</div>
+</div>
+
+<script>
+var PAIRS = [
+  {
+    title: "read / read", sub: "Present tense vs. Past tense",
+    a: {role:"Present", sentence:"I read books every day.", ipa:"/riːd/"},
+    b: {role:"Past", sentence:"I read that book yesterday.", ipa:"/rɛd/"}
+  },
+  {
+    title: "live / live", sub: "Verb vs. Adjective",
+    a: {role:"Verb", sentence:"I live in Sana'a.", ipa:"/lɪv/"},
+    b: {role:"Adjective", sentence:"This is a live show.", ipa:"/laɪv/"}
+  },
+  {
+    title: "close / close", sub: "Verb vs. Adjective",
+    a: {role:"Verb", sentence:"Please close the door.", ipa:"/kloʊz/"},
+    b: {role:"Adjective", sentence:"We live close to the school.", ipa:"/kloʊs/"}
+  },
+  {
+    title: "record / record", sub: "Noun vs. Verb (stress shifts!)",
+    a: {role:"Noun", sentence:"I bought a new record.", ipa:"/ˈrɛkərd/"},
+    b: {role:"Verb", sentence:"I will record the song.", ipa:"/rɪˈkɔːrd/"}
+  }
+];
+
+function speak(text){
+  var filename = 'audio/' + text.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') + '.mp3';
+  var audio = new Audio();
+  var handled = false;
+  audio.addEventListener('error', function(){ if(handled) return; handled = true; speakTTS(text); });
+  audio.addEventListener('canplay', function(){ if(handled) return; handled = true; audio.play().catch(function(){ speakTTS(text); }); });
+  audio.src = filename;
+}
+function speakTTS(text){
+  if(!('speechSynthesis' in window)) return;
+  var u = new SpeechSynthesisUtterance(text); u.rate = 0.85; u.lang = 'en-US';
+  window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+}
+
+var container = document.getElementById('pairsContainer');
+PAIRS.forEach(function(p){
+  var div = document.createElement('div');
+  div.className = 'pair-card';
+  div.innerHTML = '<div class="pair-title">'+p.title+'</div><div class="pair-sub">'+p.sub+'</div>'+
+    '<div class="versions">'+
+      '<div class="version"><div class="role">'+p.a.role+'</div><div class="sentence">'+p.a.sentence+'</div><div class="ipa">'+p.a.ipa+'</div>'+
+        '<button class="play-btn" onclick="speak(\''+p.a.sentence.replace(/'/g,"\\'")+'\')">▶ Listen</button></div>'+
+      '<div class="version"><div class="role">'+p.b.role+'</div><div class="sentence">'+p.b.sentence+'</div><div class="ipa">'+p.b.ipa+'</div>'+
+        '<button class="play-btn" onclick="speak(\''+p.b.sentence.replace(/'/g,"\\'")+'\')">▶ Listen</button></div>'+
+    '</div>';
+  container.appendChild(div);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المعهد الأكاديمي الحديث — الوحدة 1: Hello, Meeting People</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C2B39; --ink-2:#111C26;
+    --chalk:#F5F1E6; --chalk-dim:#E4DBC6;
+    --gold:#C99A3E; --gold-soft:#E7C67B;
+    --terminal:#5FBF8A; --pencil:#B24A36;
+    --serif:'IBM Plex Serif',serif; --sans:'IBM Plex Sans',sans-serif; --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--sans);background:var(--chalk);color:var(--ink);}
+  .wrap{max-width:760px;margin:0 auto;padding:44px 24px 90px;}
+  h1,h2,h3{font-family:var(--serif);margin:0 0 10px;}
+  p{color:#4a5a68;line-height:1.55;}
+  .eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--pencil);margin-bottom:8px;}
+
+  .unit-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:10px;}
+  .word-bank-strip{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 6px;}
+  .wb-chip{font-family:var(--mono);font-size:.76rem;padding:5px 10px;border-radius:4px;background:#EDE4CB;border:1px solid #d9cfb4;color:#6b5f3e;}
+
+  .progress-track{height:6px;background:#e4dbc6;border-radius:3px;overflow:hidden;margin:18px 0 26px;}
+  .progress-fill{height:100%;background:var(--gold);width:0%;transition:width .3s;}
+
+  .step-nav{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap;}
+  .step-pill{
+    font-family:var(--mono);font-size:.72rem;padding:6px 12px;border-radius:20px;
+    border:1px solid #d9cfb4;color:#8a7d5c;background:#FAF7EF;
+  }
+  .step-pill.current{border-color:var(--gold);background:#FCF3DE;color:var(--ink);font-weight:600;}
+  .step-pill.done{border-color:var(--terminal);color:var(--terminal);}
+
+  .screen{display:none;animation:fade .3s ease;}
+  .screen.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  .card{border:1px solid #d9cfb4;border-radius:10px;padding:26px;background:#FAF7EF;margin-bottom:18px;}
+
+  /* vocab flip cards */
+  .vocab-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;}
+  .vocab-card{perspective:800px;height:150px;cursor:pointer;}
+  .vocab-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+  .vocab-card.flipped .vocab-inner{transform:rotateY(180deg);}
+  .vocab-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center;border:1px solid #d9cfb4;}
+  .vocab-front{background:var(--ink);color:var(--chalk);}
+  .vocab-front .w{font-family:var(--serif);font-size:1.15rem;font-weight:700;}
+  .vocab-front .hint{font-family:var(--mono);font-size:.68rem;color:var(--terminal);margin-top:8px;}
+  .vocab-back{background:#F1EBDB;transform:rotateY(180deg);}
+  .vocab-back .def{font-size:.82rem;color:#4a4132;margin-bottom:6px;}
+  .vocab-back .ex{font-size:.76rem;font-style:italic;color:#8a7d5c;}
+  .play-btn{
+    font-family:var(--mono);font-size:.7rem;border:1px solid var(--terminal);color:var(--terminal);
+    background:transparent;border-radius:4px;padding:4px 9px;cursor:pointer;margin-top:6px;
+  }
+
+  /* dialogue */
+  .dialogue-line{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start;}
+  .dialogue-line .speaker{font-family:var(--mono);font-size:.72rem;color:var(--pencil);min-width:52px;padding-top:3px;}
+  .dialogue-line .bubble{background:#fff;border:1px solid #d9cfb4;border-radius:8px;padding:10px 14px;font-size:.95rem;flex:1;}
+
+  .btn{display:inline-block;padding:12px 22px;border-radius:5px;font-weight:600;font-size:.92rem;cursor:pointer;border:1px solid transparent;font-family:var(--sans);}
+  .btn-gold{background:var(--gold);color:var(--ink-2);}
+  .btn-gold:disabled{opacity:.4;cursor:not-allowed;}
+  .btn-outline{border-color:#cbbf9c;color:var(--ink);background:transparent;}
+  .nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+
+  /* fill in blank */
+  .fib-sentence{font-size:1rem;margin-bottom:16px;padding:14px 16px;background:#fff;border-radius:8px;border:1px solid #d9cfb4;}
+  .fib-sentence select{font-family:var(--mono);font-size:.9rem;padding:3px 8px;border-radius:4px;border:1px solid var(--gold);background:#fff;color:var(--ink);font-weight:600;}
+
+  /* reorder */
+  .reorder-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;padding:14px;background:#fff;border:1px solid #d9cfb4;border-radius:8px;min-height:48px;}
+  .word-chip{font-family:var(--mono);font-size:.88rem;padding:7px 12px;background:#EDE4CB;border:1px solid #d9cfb4;border-radius:5px;cursor:grab;user-select:none;}
+  .word-chip.placed{background:#FCF3DE;border-color:var(--gold);}
+  .bank-row{display:flex;flex-wrap:wrap;gap:8px;}
+
+  /* minimal pairs */
+  .mp-row{display:flex;align-items:center;gap:16px;margin-bottom:14px;padding:14px;background:#fff;border:1px solid #d9cfb4;border-radius:8px;}
+  .mp-options{display:flex;gap:10px;}
+  .mp-opt{font-family:var(--mono);padding:8px 14px;border:1px solid #d9cfb4;border-radius:5px;cursor:pointer;background:#FAF7EF;}
+  .mp-opt.selected{border-color:var(--gold);background:#FCF3DE;}
+  .mp-opt.correct{border-color:var(--terminal);background:#e8f6ee;}
+  .mp-opt.wrong{border-color:var(--pencil);background:#fbeae6;}
+
+  /* match */
+  .match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:34px;}
+  .match-col h5{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#8a7d5c;margin:0 0 10px;}
+  .match-item{padding:11px 13px;margin-bottom:8px;border-radius:6px;border:1px solid #d9cfb4;background:#fff;cursor:pointer;font-size:.9rem;transition:all .15s;}
+  .match-item.selected{border-color:var(--gold);background:#FCF3DE;}
+  .match-item.correct{border-color:var(--terminal);background:#e8f6ee;}
+  .match-item.wrong{border-color:var(--pencil);background:#fbeae6;animation:shake .3s;}
+  @keyframes shake{25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+
+  /* speak step */
+  .record-box{text-align:center;padding:20px;}
+  .record-btn{
+    width:80px;height:80px;border-radius:50%;background:var(--pencil);color:#fff;border:none;
+    font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;
+  }
+  .record-btn.recording{animation:pulse 1s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(178,74,54,.5);}70%{box-shadow:0 0 0 16px rgba(178,74,54,0);}}
+  audio{width:100%;margin-top:12px;}
+
+  .note-box{margin-top:22px;padding:16px 18px;border-radius:8px;background:var(--ink);color:var(--chalk-dim);font-size:.84rem;text-align:left;line-height:1.5;}
+  .result-card{border-radius:12px;padding:34px;text-align:center;}
+  .result-pass{background:#e8f6ee;border:1px solid #bfe3cd;}
+  .result-retry{background:#FCF3DE;border:1px solid #eadfb8;}
+  .badge{display:inline-block;font-family:var(--mono);font-weight:700;font-size:1.3rem;padding:9px 20px;border-radius:6px;background:var(--ink);color:var(--chalk);margin-bottom:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="unit-header">
+    <div>
+      <div class="eyebrow">English Foundations · Unit 1</div>
+      <h1 style="font-size:1.6rem;">Hello — Meeting People</h1>
+      <p style="margin:0;max-width:52ch;">Greet someone, introduce yourself, and ask where someone's from. 7 words, used every step, checked at the end.</p>
+    </div>
+  </div>
+
+  <div class="word-bank-strip" id="wordBankStrip"></div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="step-nav" id="stepNav"></div>
+
+  <!-- STEP 1: MEET THE WORDS -->
+  <div class="screen active" id="step1">
+    <div class="card">
+      <h3 style="margin-top:0;">Meet the words</h3>
+      <p style="margin-top:-4px;font-size:.88rem;">Tap a card to see its meaning. Tap ▶ to hear it.</p>
+      <div class="vocab-grid" id="vocabGrid"></div>
+    </div>
+    <div class="nav-row"><span></span><button class="btn btn-gold" onclick="goToStep(2)">Next: Read &amp; listen →</button></div>
+  </div>
+
+  <!-- STEP 2: READ & LISTEN -->
+  <div class="screen" id="step2">
+    <div class="card">
+      <h3 style="margin-top:0;">Read &amp; listen</h3>
+      <p style="margin-top:-4px;font-size:.88rem;">Two people meet for the first time. Play each line as many times as you like.</p>
+      <div id="dialogueBox"></div>
+      <button class="btn btn-outline" onclick="playFullDialogue()">▶ Play the whole conversation</button>
+    </div>
+    <div class="nav-row"><button class="btn btn-outline" onclick="goToStep(1)">← Back</button><button class="btn btn-gold" onclick="goToStep(3)">Next: Practice →</button></div>
+  </div>
+
+  <!-- STEP 3: PRACTICE -->
+  <div class="screen" id="step3">
+    <div class="card">
+      <h3 style="margin-top:0;">Fill in the blanks</h3>
+      <div id="fibList"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;">Put the sentence in order</h3>
+      <p style="margin-top:-4px;font-size:.88rem;">Tap the words in the right order.</p>
+      <div id="reorderArea"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;">Listen closely — which do you hear?</h3>
+      <p style="margin-top:-4px;font-size:.88rem;">Arabic speakers often mix up these English sounds. Listen and choose.</p>
+      <div id="minimalPairArea"></div>
+    </div>
+    <div class="nav-row"><button class="btn btn-outline" onclick="goToStep(2)">← Back</button><button class="btn btn-gold" onclick="goToStep(4)">Next: Match &amp; recall →</button></div>
+  </div>
+
+  <!-- STEP 4: MATCH & RECALL -->
+  <div class="screen" id="step4">
+    <div class="card">
+      <h3 style="margin-top:0;">Match &amp; recall</h3>
+      <p style="margin-top:-4px;font-size:.88rem;">Click a word, then click its meaning.</p>
+      <div class="match-wrap">
+        <div class="match-col"><h5>Words</h5><div id="matchWords"></div></div>
+        <div class="match-col"><h5>Meanings</h5><div id="matchDefs"></div></div>
+      </div>
+      <div id="matchResult" style="margin-top:14px;font-weight:600;"></div>
+    </div>
+    <div class="nav-row"><button class="btn btn-outline" onclick="goToStep(3)">← Back</button><button class="btn btn-gold" id="toStep5Btn" onclick="goToStep(5)">Next: Speak &amp; produce →</button></div>
+  </div>
+
+  <!-- STEP 5: SPEAK & PRODUCE -->
+  <div class="screen" id="step5">
+    <div class="card">
+      <h3 style="margin-top:0;">Shadow it</h3>
+      <p style="margin-top:-4px;font-size:.88rem;">Listen to the sentence, then record yourself saying it the same way.</p>
+      <button class="btn btn-outline" onclick="speak('Hello! Nice to meet you. My name is Sara.', 0.9)">▶ Play the sentence</button>
+      <div class="record-box">
+        <button class="record-btn" id="recordBtn" onclick="toggleRecording()">●</button>
+        <div id="recordStatus" style="font-family:var(--mono);font-size:.8rem;color:#8a7d5c;">Tap to record</div>
+        <audio id="playback" controls style="display:none;"></audio>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;">Now, introduce yourself</h3>
+      <p style="margin-top:-4px;font-size:.88rem;">Say your name and where you're from, using what you learned this unit.</p>
+      <div class="record-box">
+        <button class="record-btn" id="recordBtn2" onclick="toggleRecording2()">●</button>
+        <div id="recordStatus2" style="font-family:var(--mono);font-size:.8rem;color:#8a7d5c;">Tap to record</div>
+        <audio id="playback2" controls style="display:none;"></audio>
+      </div>
+    </div>
+    <div class="nav-row"><button class="btn btn-outline" onclick="goToStep(4)">← Back</button><button class="btn btn-gold" id="finishBtn" disabled onclick="showResult()">See my result →</button></div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="screen" id="stepResult">
+    <div id="resultContent"></div>
+  </div>
+
+</div>
+
+<script>
+const WORDS = [
+  {w:"hello", def:"A greeting when you meet someone.", ex:"Hello! How are you?"},
+  {w:"goodbye", def:"What you say when you leave.", ex:"Goodbye, see you soon."},
+  {w:"name", def:"What people call you.", ex:"My name is Ahmed."},
+  {w:"nice to meet you", def:"A polite phrase for the first time you meet someone.", ex:"Nice to meet you too."},
+  {w:"from", def:"Shows where a person or thing started.", ex:"I'm from Sana'a."},
+  {w:"how are you", def:"A question asking about someone's wellbeing.", ex:"How are you today?"},
+  {w:"fine, thanks", def:"A common, polite answer to 'how are you'.", ex:"Fine, thanks! And you?"}
+];
+
+const STEPS = ["Words","Read & listen","Practice","Match","Speak"];
+let currentStep = 1;
+let stepsCompleted = {1:false,2:false,3:false,4:false,5:false};
+
+function speak(text, rate){
+  if(!('speechSynthesis' in window)) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = rate || 0.95;
+  u.lang = 'en-US';
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+function renderStepNav(){
+  const nav = document.getElementById('stepNav');
+  nav.innerHTML = STEPS.map((s,i)=>{
+    const n = i+1;
+    let cls = 'step-pill';
+    if(n === currentStep) cls += ' current';
+    else if(stepsCompleted[n]) cls += ' done';
+    return `<div class="${cls}">${n}. ${s}</div>`;
+  }).join('');
+  document.getElementById('progressFill').style.width = `${((currentStep-1)/STEPS.length)*100}%`;
+}
+function goToStep(n){
+  stepsCompleted[currentStep] = true;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(n===0?'stepResult':'step'+n).classList.add('active');
+  currentStep = n;
+  renderStepNav();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.getElementById('wordBankStrip').innerHTML = WORDS.map(w=>`<span class="wb-chip">${w.w}</span>`).join('');
+renderStepNav();
+
+// STEP 1: vocab cards
+const vocabGrid = document.getElementById('vocabGrid');
+WORDS.forEach(item=>{
+  const card = document.createElement('div');
+  card.className = 'vocab-card';
+  card.innerHTML = `
+    <div class="vocab-inner">
+      <div class="vocab-face vocab-front">
+        <div class="w">${item.w}</div>
+        <div class="hint">tap to reveal</div>
+      </div>
+      <div class="vocab-face vocab-back">
+        <div class="def">${item.def}</div>
+        <div class="ex">"${item.ex}"</div>
+        <button class="play-btn" onclick="event.stopPropagation(); speak('${item.ex.replace(/'/g,"\\'")}')">▶ play</button>
+      </div>
+    </div>`;
+  card.addEventListener('click', ()=> card.classList.toggle('flipped'));
+  vocabGrid.appendChild(card);
+});
+
+// STEP 2: dialogue
+const DIALOGUE = [
+  {speaker:"Sara", line:"Hello! My name is Sara. Nice to meet you."},
+  {speaker:"Omar", line:"Nice to meet you too. My name is Omar."},
+  {speaker:"Sara", line:"Where are you from, Omar?"},
+  {speaker:"Omar", line:"I'm from Aden. And you? Where are you from?"},
+  {speaker:"Sara", line:"I'm from Sana'a. How are you today?"},
+  {speaker:"Omar", line:"Fine, thanks! And you?"},
+  {speaker:"Sara", line:"Fine, thanks. Goodbye, Omar!"},
+  {speaker:"Omar", line:"Goodbye, Sara!"}
+];
+const dialogueBox = document.getElementById('dialogueBox');
+DIALOGUE.forEach(d=>{
+  const row = document.createElement('div');
+  row.className = 'dialogue-line';
+  row.innerHTML = `<div class="speaker">${d.speaker}</div><div class="bubble">${d.line} <button class="play-btn" onclick="speak('${d.line.replace(/'/g,"\\'")}')">▶</button></div>`;
+  dialogueBox.appendChild(row);
+});
+function playFullDialogue(){
+  let i = 0;
+  function next(){
+    if(i >= DIALOGUE.length) return;
+    const u = new SpeechSynthesisUtterance(DIALOGUE[i].line);
+    u.rate = 0.95; u.lang = 'en-US';
+    u.onend = ()=>{ i++; next(); };
+    window.speechSynthesis.speak(u);
+  }
+  window.speechSynthesis.cancel();
+  next();
+}
+
+// STEP 3a: fill in the blank
+const fibData = [
+  {blank:"hello", sentence:"___! My name is Layla."},
+  {blank:"name", sentence:"What is your ___?"},
+  {blank:"from", sentence:"I am ___ Taiz."},
+  {blank:"how are you", sentence:"___ today?"},
+  {blank:"fine, thanks", sentence:"___. And you?"}
+];
+const fibOptions = ["hello","goodbye","name","nice to meet you","from","how are you","fine, thanks"];
+const fibList = document.getElementById('fibList');
+fibData.forEach((item,i)=>{
+  const wrap = document.createElement('div');
+  wrap.className = 'fib-sentence';
+  const parts = item.sentence.split('___');
+  wrap.innerHTML = `${parts[0]}<select data-idx="${i}" data-answer="${item.blank}" onchange="checkFIBLive()">
+    <option value="">choose…</option>
+    ${fibOptions.map(o=>`<option value="${o}">${o}</option>`).join('')}
+  </select>${parts[1]}`;
+  fibList.appendChild(wrap);
+});
+let fibScore = {correct:0, total:fibData.length, attempted:0};
+function checkFIBLive(){
+  let correct = 0, attempted = 0;
+  document.querySelectorAll('#fibList select').forEach(sel=>{
+    if(sel.value){
+      attempted++;
+      if(sel.value === sel.dataset.answer){ correct++; sel.style.borderColor = '#5FBF8A'; }
+      else { sel.style.borderColor = '#B24A36'; }
+    } else {
+      sel.style.borderColor = '#d9cfb4';
+    }
+  });
+  fibScore = {correct, total:fibData.length, attempted};
+}
+
+// STEP 3b: sentence reorder
+const reorderTarget = ["I", "am", "from", "Sana'a"];
+let reorderPlaced = [];
+function renderReorder(){
+  const shuffled = [...reorderTarget].sort(()=>Math.random()-0.5);
+  const area = document.getElementById('reorderArea');
+  area.innerHTML = `
+    <div class="reorder-row" id="reorderTarget"></div>
+    <div class="bank-row" id="reorderBank">
+      ${shuffled.map(w=>`<span class="word-chip" data-word="${w}" onclick="placeWord(this)">${w}</span>`).join('')}
+    </div>`;
+  reorderPlaced = [];
+}
+function placeWord(el){
+  if(el.classList.contains('placed')) return;
+  el.classList.add('placed');
+  reorderPlaced.push(el.dataset.word);
+  document.getElementById('reorderTarget').innerHTML = reorderPlaced.map(w=>`<span class="word-chip placed">${w}</span>`).join('');
+}
+renderReorder();
+function reorderCorrect(){
+  return reorderPlaced.length === reorderTarget.length && reorderPlaced.every((w,i)=>w===reorderTarget[i]);
+}
+
+// STEP 3c: minimal pairs
+const MINIMAL_PAIRS = [
+  {audio:"How are you?", options:["How are you?","How old are you?"], answer:0},
+  {audio:"Nice to meet you.", options:["Nice to meet you.","Nice to eat you."], answer:0},
+  {audio:"Fine, thanks.", options:["Fine, thanks.","Find, tanks."], answer:0}
+];
+const mpArea = document.getElementById('minimalPairArea');
+let mpAnswers = {};
+MINIMAL_PAIRS.forEach((item,i)=>{
+  const row = document.createElement('div');
+  row.className = 'mp-row';
+  row.innerHTML = `
+    <button class="play-btn" style="padding:8px 14px;" onclick="speak('${item.audio.replace(/'/g,"\\'")}', 0.85)">▶ Listen</button>
+    <div class="mp-options">
+      ${item.options.map((o,oi)=>`<div class="mp-opt" data-i="${i}" data-oi="${oi}" onclick="selectMP(this,${i},${oi},${item.answer})">${o}</div>`).join('')}
+    </div>`;
+  mpArea.appendChild(row);
+});
+function selectMP(el,i,oi,answer){
+  document.querySelectorAll(`.mp-opt[data-i="${i}"]`).forEach(o=>o.classList.remove('selected','correct','wrong'));
+  el.classList.add('selected');
+  mpAnswers[i] = oi;
+  if(oi === answer) el.classList.add('correct');
+  else el.classList.add('wrong');
+}
+
+// STEP 4: match & recall
+const matchWordsEl = document.getElementById('matchWords');
+const matchDefsEl = document.getElementById('matchDefs');
+let selectedWord=null, selectedDef=null, matchedCount=0;
+const shuffledDefs = [...WORDS].sort(()=>Math.random()-0.5);
+WORDS.forEach(item=>{
+  const el = document.createElement('div');
+  el.className='match-item'; el.textContent=item.w; el.dataset.word=item.w;
+  el.addEventListener('click',()=>selectMWord(el));
+  matchWordsEl.appendChild(el);
+});
+shuffledDefs.forEach(item=>{
+  const el = document.createElement('div');
+  el.className='match-item'; el.textContent=item.def; el.dataset.word=item.w;
+  el.addEventListener('click',()=>selectMDef(el));
+  matchDefsEl.appendChild(el);
+});
+function selectMWord(el){ if(el.classList.contains('correct'))return; document.querySelectorAll('#matchWords .match-item').forEach(i=>i.classList.remove('selected')); el.classList.add('selected'); selectedWord=el; tryMatch(); }
+function selectMDef(el){ if(el.classList.contains('correct'))return; document.querySelectorAll('#matchDefs .match-item').forEach(i=>i.classList.remove('selected')); el.classList.add('selected'); selectedDef=el; tryMatch(); }
+function tryMatch(){
+  if(!selectedWord||!selectedDef) return;
+  const result = document.getElementById('matchResult');
+  if(selectedWord.dataset.word === selectedDef.dataset.word){
+    selectedWord.classList.remove('selected'); selectedDef.classList.remove('selected');
+    selectedWord.classList.add('correct'); selectedDef.classList.add('correct');
+    matchedCount++;
+    result.style.color = '#3f8f63';
+    result.textContent = matchedCount===WORDS.length ? `All matched! ${matchedCount}/${WORDS.length}` : `${matchedCount}/${WORDS.length} matched`;
+  } else {
+    selectedWord.classList.add('wrong'); selectedDef.classList.add('wrong');
+    setTimeout(()=>{ selectedWord.classList.remove('selected','wrong'); selectedDef.classList.remove('selected','wrong'); },400);
+  }
+  selectedWord=null; selectedDef=null;
+}
+
+// STEP 5: recording
+let mediaRecorder, mediaRecorder2, chunks=[], chunks2=[], recorded1=false, recorded2=false;
+async function toggleRecording(){
+  const btn = document.getElementById('recordBtn');
+  const status = document.getElementById('recordStatus');
+  if(!btn.classList.contains('recording')){
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      chunks = [];
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = e=>chunks.push(e.data);
+      mediaRecorder.onstop = ()=>{
+        const blob = new Blob(chunks, {type:'audio/webm'});
+        const audioEl = document.getElementById('playback');
+        audioEl.src = URL.createObjectURL(blob);
+        audioEl.style.display='block';
+        recorded1 = true;
+        checkFinishReady();
+      };
+      mediaRecorder.start();
+      btn.classList.add('recording');
+      status.textContent = 'Recording… tap to stop';
+    }catch(err){
+      status.textContent = 'Microphone not available in this environment.';
+    }
+  } else {
+    mediaRecorder.stop();
+    btn.classList.remove('recording');
+    status.textContent = 'Recorded ✓';
+  }
+}
+async function toggleRecording2(){
+  const btn = document.getElementById('recordBtn2');
+  const status = document.getElementById('recordStatus2');
+  if(!btn.classList.contains('recording')){
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      chunks2 = [];
+      mediaRecorder2 = new MediaRecorder(stream);
+      mediaRecorder2.ondataavailable = e=>chunks2.push(e.data);
+      mediaRecorder2.onstop = ()=>{
+        const blob = new Blob(chunks2, {type:'audio/webm'});
+        const audioEl = document.getElementById('playback2');
+        audioEl.src = URL.createObjectURL(blob);
+        audioEl.style.display='block';
+        recorded2 = true;
+        checkFinishReady();
+      };
+      mediaRecorder2.start();
+      btn.classList.add('recording');
+      status.textContent = 'Recording… tap to stop';
+    }catch(err){
+      status.textContent = 'Microphone not available in this environment.';
+    }
+  } else {
+    mediaRecorder2.stop();
+    btn.classList.remove('recording');
+    status.textContent = 'Recorded ✓';
+  }
+}
+function checkFinishReady(){
+  document.getElementById('finishBtn').disabled = !(recorded1 && recorded2);
+}
+
+// MASTERY GATE
+function showResult(){
+  checkFIBLive();
+  const fibPct = fibScore.total ? (fibScore.correct/fibScore.total) : 0;
+  const reorderPass = reorderCorrect();
+  const mpCorrectCount = Object.keys(mpAnswers).filter(i=>mpAnswers[i]===MINIMAL_PAIRS[i].answer).length;
+  const mpPct = mpCorrectCount / MINIMAL_PAIRS.length;
+  const matchPct = matchedCount / WORDS.length;
+
+  const overall = (fibPct*0.35) + (reorderPass?1:0)*0.25 + (mpPct*0.2) + (matchPct*0.2);
+  const overallPct = Math.round(overall*100);
+  const passed = overallPct >= 80 && recorded1 && recorded2;
+
+  goToStep(0);
+  const scores = {'the fill-in-the-blank exercise':fibPct, 'the sentence reordering exercise':reorderPass?1:0, 'the listening exercise':mpPct, 'the matching exercise':matchPct};
+  const weakArea = Object.keys(scores).reduce((a,b)=>scores[a]<=scores[b]?a:b);
+
+  const rc = document.getElementById('resultContent');
+  if(passed){
+    rc.innerHTML = `
+      <div class="result-card result-pass">
+        <div class="badge">Unit 1 complete</div>
+        <h2 style="margin-top:0;">Well done!</h2>
+        <p>Score: ${overallPct}% · Both speaking recordings captured.</p>
+        <p>You can now greet someone, introduce yourself, and ask where they're from in English.</p>
+        <button class="btn btn-gold" style="margin-top:14px;" onclick="alert('This would unlock Unit 2 in the live platform.')">Continue to Unit 2 →</button>
+        <div class="note-box">Your two speaking recordings are saved for review. In the live platform, these get queued for a quick human check once a reviewer is available — pronunciation accuracy isn't auto-scored yet.</div>
+      </div>`;
+  } else {
+    rc.innerHTML = `
+      <div class="result-card result-retry">
+        <div class="badge">Almost there</div>
+        <h2 style="margin-top:0;">Score: ${overallPct}%</h2>
+        <p>You need 80% and both recordings to complete this unit. Your weakest area right now looks like <strong>${weakArea}</strong>.</p>
+        <button class="btn btn-gold" style="margin-top:8px;" onclick="location.reload()">↻ Retry this unit</button>
+        <div class="note-box">In the live platform, a retry would reshuffle the questions rather than repeat the exact same ones — this prototype reloads fresh content on retry too.</div>
+      </div>`;
+  }
+}
+</script>
+</body>
+</html>

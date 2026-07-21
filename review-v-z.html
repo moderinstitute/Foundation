@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مراجعة V-Z — المعهد الأكاديمي الحديث</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1C2B39;--ink-2:#111C26;--chalk:#F5F1E6;--gold:#C99A3E;--gold-soft:#E7C67B;--terminal:#5FBF8A;--pencil:#B24A36;--serif:'IBM Plex Serif',serif;--sans:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace;--arabic:'Noto Sans Arabic',sans-serif;}
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--sans);background:linear-gradient(180deg,#F7F3E9 0%,#F5F1E6 100%);color:var(--ink);}
+  .wrap{max-width:560px;margin:0 auto;padding:24px 16px 70px;}
+  .ar{direction:rtl;text-align:right;font-family:var(--arabic);}
+  .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .badge{font-family:var(--mono);font-weight:700;font-size:.8rem;color:var(--chalk);background:var(--ink);border-radius:8px;padding:6px 12px;}
+  .btn-outline{border-color:#d5c9a3;color:var(--ink);background:transparent;padding:6px 12px;font-size:.78rem;border-radius:10px;border:1.5px solid #d5c9a3;text-decoration:none;font-family:var(--sans);}
+  h1{font-family:var(--serif);font-size:1.4rem;margin:0 0 6px;}
+  p{color:#4a5a68;}
+  .status-row{display:flex;justify-content:space-between;align-items:center;margin:14px 0;direction:ltr;font-family:var(--mono);font-size:1rem;}
+  .timer{color:var(--pencil);font-weight:700;}
+  .timer.urgent{animation:blink .5s infinite;}
+  @keyframes blink{50%{opacity:.3;}}
+  .card{border:1px solid #ecdfc2;border-radius:14px;padding:26px;background:#fff;text-align:center;box-shadow:0 4px 18px -6px rgba(60,50,20,.06);}
+  .prompt-emoji{font-size:3.4rem;margin-bottom:16px;}
+  .options{display:flex;flex-direction:column;gap:10px;direction:ltr;}
+  .opt-btn{font-family:var(--mono);font-weight:700;font-size:1rem;padding:14px;border-radius:10px;border:1.5px solid #ecdfc2;background:#FDFBF5;cursor:pointer;}
+  .opt-btn.correct{background:var(--terminal);color:#fff;border-color:var(--terminal);}
+  .opt-btn.wrong{background:var(--pencil);color:#fff;border-color:var(--pencil);}
+  .start-screen{text-align:center;padding:30px;}
+  .btn{display:inline-block;padding:12px 24px;border-radius:10px;font-weight:600;font-size:.95rem;cursor:pointer;border:1px solid transparent;font-family:var(--sans);}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),#d9ac54);color:var(--ink-2);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-bar"><div class="badge">REVIEW · V-Z</div><div style="display:flex;gap:8px;"><a href="closure.html" class="btn-outline" style="background:var(--gold);color:var(--ink-2);border-color:var(--gold);">متابعة لخاتمة الوحدة ←</a><a href="index.html" class="btn-outline">🏠</a></div></div>
+  <h1 class="ar">مطابقة سريعة — راجع حروف V إلى Z</h1>
+  <p class="ar">اختر الكلمة الصحيحة قبل انتهاء الوقت! كل جولة 5 ثوانٍ.</p>
+  <div id="gameArea"></div>
+</div>
+<script>
+var WORDS = [
+  {w:"VAN", emoji:"🚐"}, {w:"WATER", emoji:"💧"}, {w:"BOX", emoji:"📦"},
+  {w:"HAPPY", emoji:"😊"}, {w:"ZEBRA", emoji:"🦓"}, {w:"VIOLIN", emoji:"🎻"},
+  {w:"WINDOW", emoji:"🪟"}, {w:"FOX", emoji:"🦊"}
+];
+var ALL_WORDS = WORDS.map(function(i){return i.w;});
+var idx = 0, score = 0, timeLeft = 5, timerInterval = null;
+var area = document.getElementById('gameArea');
+
+function startGame(){
+  idx = 0; score = 0;
+  renderRound();
+}
+function renderRound(){
+  clearInterval(timerInterval);
+  if(idx >= WORDS.length){
+    area.innerHTML = '<div class="start-screen"><h2 style="font-family:var(--serif);">🎉 انتهت الجولة!</h2><p>Score: '+score+' / '+WORDS.length+'</p><button class="btn btn-gold" onclick="startGame()">↻ العب مرة أخرى</button></div>';
+    return;
+  }
+  var item = WORDS[idx];
+  var wrongs = ALL_WORDS.filter(function(w){return w!==item.w;}).sort(function(){return Math.random()-0.5;}).slice(0,2);
+  var options = [item.w].concat(wrongs).sort(function(){return Math.random()-0.5;});
+  timeLeft = 5;
+  area.innerHTML = '<div class="status-row"><span>Score: '+score+' / '+WORDS.length+'</span><span class="timer" id="timerDisplay">⏱ '+timeLeft+'</span></div>'+
+    '<div class="card"><div class="prompt-emoji">'+item.emoji+'</div><div class="options" id="optionsArea">'+
+    options.map(function(o){ return '<div class="opt-btn" onclick="answer(this,\''+o+'\',\''+item.w+'\')">'+o+'</div>'; }).join('')+
+    '</div></div>';
+  timerInterval = setInterval(function(){
+    timeLeft--;
+    var td = document.getElementById('timerDisplay');
+    if(td){ td.textContent = '⏱ ' + timeLeft; if(timeLeft<=2) td.classList.add('urgent'); }
+    if(timeLeft <= 0){
+      clearInterval(timerInterval);
+      revealAnswer(null, item.w);
+    }
+  }, 1000);
+}
+function answer(el, chosen, correct){
+  clearInterval(timerInterval);
+  if(chosen === correct) score++;
+  revealAnswer(chosen, correct);
+}
+function revealAnswer(chosen, correct){
+  var opts = document.querySelectorAll('.opt-btn');
+  opts.forEach(function(o){
+    o.style.pointerEvents = 'none';
+    if(o.textContent === correct) o.classList.add('correct');
+    else if(o.textContent === chosen) o.classList.add('wrong');
+  });
+  setTimeout(function(){ idx++; renderRound(); }, 900);
+}
+area.innerHTML = '<div class="start-screen"><h2 style="font-family:var(--serif);">جاهز؟</h2><p class="ar">8 كلمات، 5 ثوانٍ لكل واحدة.</p><button class="btn btn-gold" onclick="startGame()">ابدأ ←</button></div>';
+</script>
+</body>
+</html>

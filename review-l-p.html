@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مراجعة L-P — المعهد الأكاديمي الحديث</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1C2B39;--ink-2:#111C26;--chalk:#F5F1E6;--gold:#C99A3E;--gold-soft:#E7C67B;--terminal:#5FBF8A;--pencil:#B24A36;--serif:'IBM Plex Serif',serif;--sans:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace;--arabic:'Noto Sans Arabic',sans-serif;}
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--sans);background:linear-gradient(180deg,#F7F3E9 0%,#F5F1E6 100%);color:var(--ink);}
+  .wrap{max-width:560px;margin:0 auto;padding:24px 16px 70px;}
+  .ar{direction:rtl;text-align:right;font-family:var(--arabic);}
+  .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .badge{font-family:var(--mono);font-weight:700;font-size:.8rem;color:var(--chalk);background:var(--ink);border-radius:8px;padding:6px 12px;}
+  .btn-outline{border-color:#d5c9a3;color:var(--ink);background:transparent;padding:6px 12px;font-size:.78rem;border-radius:10px;border:1.5px solid #d5c9a3;text-decoration:none;font-family:var(--sans);}
+  h1{font-family:var(--serif);font-size:1.4rem;margin:0 0 6px;}
+  p{color:#4a5a68;}
+  .card{border:1px solid #ecdfc2;border-radius:14px;padding:24px;background:#fff;text-align:center;box-shadow:0 4px 18px -6px rgba(60,50,20,.06);}
+  .emoji-hint{font-size:2.6rem;margin-bottom:10px;}
+  .lives{font-size:1.4rem;letter-spacing:6px;margin-bottom:14px;}
+  .word-blanks{font-family:var(--mono);font-size:1.8rem;letter-spacing:10px;font-weight:700;color:var(--pencil);margin:14px 0;direction:ltr;}
+  .keyboard{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:16px;direction:ltr;}
+  .key{font-family:var(--mono);font-weight:700;padding:10px 0;border-radius:8px;border:1px solid #ecdfc2;background:#FDFBF5;cursor:pointer;}
+  .key.correct{background:var(--terminal);color:#fff;}
+  .key.wrong{background:var(--pencil);color:#fff;opacity:.6;}
+  .key.disabled{pointer-events:none;}
+  .status-msg{margin-top:14px;font-family:var(--serif);font-size:1.1rem;font-weight:700;}
+  .btn{display:inline-block;padding:11px 20px;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer;border:1px solid transparent;font-family:var(--sans);margin-top:12px;}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),#d9ac54);color:var(--ink-2);}
+  .progress-text{font-family:var(--mono);font-size:.8rem;color:#8a7d5c;text-align:center;margin-bottom:10px;direction:ltr;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-bar"><div class="badge">REVIEW · L-P</div><div style="display:flex;gap:8px;"><a href="letter-engine.html?id=q" class="btn-outline" style="background:var(--gold);color:var(--ink-2);border-color:var(--gold);">المتابعة لحرف Q ←</a><a href="index.html" class="btn-outline">🏠</a></div></div>
+  <h1 class="ar">خمّن الكلمة — راجع حروف L إلى P</h1>
+  <p class="ar">اختر الحروف الصحيحة لتكوين الكلمة قبل نفاد المحاولات.</p>
+  <div class="progress-text" id="progressText"></div>
+  <div class="card">
+    <div class="emoji-hint" id="emojiHint"></div>
+    <div class="lives" id="lives"></div>
+    <div class="word-blanks" id="wordBlanks"></div>
+    <div class="keyboard" id="keyboard"></div>
+    <div class="status-msg" id="statusMsg"></div>
+  </div>
+</div>
+<script>
+var WORDS = [
+  {w:"LION", emoji:"🦁"}, {w:"MONKEY", emoji:"🐒"}, {w:"NEST", emoji:"🪺"},
+  {w:"BONE", emoji:"🦴"}, {w:"PIZZA", emoji:"🍕"}
+];
+var idx = 0, guessed = [], wrongCount = 0, MAX_WRONG = 6;
+
+function renderRound(){
+  var item = WORDS[idx];
+  guessed = []; wrongCount = 0;
+  document.getElementById('progressText').textContent = 'Word ' + (idx+1) + ' of ' + WORDS.length;
+  document.getElementById('emojiHint').textContent = item.emoji;
+  document.getElementById('statusMsg').textContent = '';
+  renderLives(); renderBlanks(); renderKeyboard();
+}
+function renderLives(){
+  document.getElementById('lives').textContent = '❤️'.repeat(MAX_WRONG - wrongCount) + '🖤'.repeat(wrongCount);
+}
+function renderBlanks(){
+  var item = WORDS[idx];
+  document.getElementById('wordBlanks').textContent = item.w.split('').map(function(l){ return guessed.indexOf(l)!==-1 ? l : '_'; }).join(' ');
+}
+function renderKeyboard(){
+  var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+  document.getElementById('keyboard').innerHTML = letters.map(function(l){
+    return '<div class="key" id="key-'+l+'" onclick="guessLetter(\''+l+'\')">'+l+'</div>';
+  }).join('');
+}
+function guessLetter(letter){
+  var keyEl = document.getElementById('key-'+letter);
+  keyEl.classList.add('disabled');
+  var item = WORDS[idx];
+  if(item.w.indexOf(letter) !== -1){
+    guessed.push(letter);
+    keyEl.classList.add('correct');
+    renderBlanks();
+    if(item.w.split('').every(function(l){ return guessed.indexOf(l)!==-1; })){
+      document.getElementById('statusMsg').style.color = '#3f8f63';
+      document.getElementById('statusMsg').textContent = '✓ Correct! "' + item.w + '"';
+      setTimeout(nextRound, 1200);
+    }
+  } else {
+    wrongCount++;
+    keyEl.classList.add('wrong');
+    renderLives();
+    if(wrongCount >= MAX_WRONG){
+      document.getElementById('statusMsg').style.color = '#B24A36';
+      document.getElementById('statusMsg').textContent = 'The word was "' + item.w + '"';
+      setTimeout(nextRound, 1500);
+    }
+  }
+}
+function nextRound(){
+  idx++;
+  if(idx >= WORDS.length){
+    document.querySelector('.card').innerHTML = '<h2 style="margin-top:0;font-family:var(--serif);">🎉 أحسنت!</h2><p>أنهيت كل الكلمات.</p><button class="btn btn-gold" onclick="location.reload()">↻ العب مرة أخرى</button>';
+    return;
+  }
+  renderRound();
+}
+renderRound();
+</script>
+</body>
+</html>

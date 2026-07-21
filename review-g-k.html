@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مراجعة G-K — المعهد الأكاديمي الحديث</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1C2B39;--ink-2:#111C26;--chalk:#F5F1E6;--gold:#C99A3E;--gold-soft:#E7C67B;--terminal:#5FBF8A;--pencil:#B24A36;--serif:'IBM Plex Serif',serif;--sans:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace;--arabic:'Noto Sans Arabic',sans-serif;}
+  *{box-sizing:border-box;user-select:none;}
+  body{margin:0;font-family:var(--sans);background:linear-gradient(180deg,#F7F3E9 0%,#F5F1E6 100%);color:var(--ink);}
+  .wrap{max-width:600px;margin:0 auto;padding:24px 16px 70px;}
+  .ar{direction:rtl;text-align:right;font-family:var(--arabic);}
+  .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .badge{font-family:var(--mono);font-weight:700;font-size:.8rem;color:var(--chalk);background:var(--ink);border-radius:8px;padding:6px 12px;}
+  .btn-outline{border-color:#d5c9a3;color:var(--ink);background:transparent;padding:6px 12px;font-size:.78rem;border-radius:10px;border:1.5px solid #d5c9a3;text-decoration:none;font-family:var(--sans);}
+  h1{font-family:var(--serif);font-size:1.4rem;margin:0 0 6px;}
+  p{color:#4a5a68;}
+  .word-list{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;direction:ltr;}
+  .word-chip{font-family:var(--mono);font-size:.82rem;padding:6px 12px;border-radius:20px;border:1px solid #ecdfc2;background:#fff;}
+  .word-chip.found{background:var(--terminal);color:#fff;border-color:var(--terminal);text-decoration:line-through;}
+  .grid{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;direction:ltr;margin:16px 0;background:#fff;padding:8px;border-radius:12px;border:1px solid #ecdfc2;}
+  .cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:.9rem;border-radius:4px;cursor:pointer;background:#FDFBF5;}
+  .cell.selected{background:var(--gold-soft);}
+  .cell.found{background:var(--terminal);color:#fff;}
+  .win-banner{text-align:center;padding:26px;background:#e8f6ee;border:1px solid #bfe3cd;border-radius:16px;margin-top:16px;}
+  .btn{display:inline-block;padding:11px 20px;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer;border:1px solid transparent;font-family:var(--sans);}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),#d9ac54);color:var(--ink-2);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-bar"><div class="badge">REVIEW · G-K</div><div style="display:flex;gap:8px;"><a href="letter-engine.html?id=l" class="btn-outline" style="background:var(--gold);color:var(--ink-2);border-color:var(--gold);">المتابعة لحرف L ←</a><a href="index.html" class="btn-outline">🏠</a></div></div>
+  <h1 class="ar">البحث عن الكلمات — راجع حروف G إلى K</h1>
+  <p class="ar">اضغط على الحرف الأول للكلمة، ثم على الحرف الأخير، لتحديدها. الكلمات قد تكون أفقية أو عمودية.</p>
+  <div class="word-list" id="wordList"></div>
+  <div class="grid" id="grid"></div>
+  <div id="winBanner"></div>
+</div>
+<script>
+var SIZE = 10;
+var WORDS = ["GOAT","FLAG","GIRL","HOUSE","HAND","PIG","BIKE","JUMP","JAR","KITE","KNEE"];
+var placements = [];
+var gridData = Array.from({length:SIZE}, () => Array(SIZE).fill(''));
+
+function tryPlace(word){
+  var dirs = [[0,1],[1,0]];
+  for(var attempt=0; attempt<60; attempt++){
+    var dir = dirs[Math.floor(Math.random()*dirs.length)];
+    var row = Math.floor(Math.random()*SIZE);
+    var col = Math.floor(Math.random()*SIZE);
+    var endRow = row + dir[0]*(word.length-1);
+    var endCol = col + dir[1]*(word.length-1);
+    if(endRow >= SIZE || endCol >= SIZE) continue;
+    var ok = true;
+    for(var i=0;i<word.length;i++){
+      var r = row+dir[0]*i, c = col+dir[1]*i;
+      if(gridData[r][c] !== '' && gridData[r][c] !== word[i]){ ok=false; break; }
+    }
+    if(!ok) continue;
+    for(var i=0;i<word.length;i++){
+      var r = row+dir[0]*i, c = col+dir[1]*i;
+      gridData[r][c] = word[i];
+    }
+    placements.push({word:word, cells:Array.from({length:word.length},(_, i)=>[row+dir[0]*i, col+dir[1]*i])});
+    return true;
+  }
+  return false;
+}
+WORDS.forEach(function(w){ tryPlace(w); });
+var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+for(var r=0;r<SIZE;r++) for(var c=0;c<SIZE;c++) if(gridData[r][c]==='') gridData[r][c] = letters[Math.floor(Math.random()*letters.length)];
+
+document.getElementById('wordList').innerHTML = WORDS.map(function(w){ return '<span class="word-chip" id="chip-'+w+'">'+w+'</span>'; }).join('');
+
+var gridEl = document.getElementById('grid');
+var cellEls = [];
+for(var r=0;r<SIZE;r++){
+  cellEls.push([]);
+  for(var c=0;c<SIZE;c++){
+    var div = document.createElement('div');
+    div.className = 'cell';
+    div.textContent = gridData[r][c];
+    div.onclick = function(rr,cc){ return function(){ selectCell(rr,cc); }; }(r,c);
+    gridEl.appendChild(div);
+    cellEls[r].push(div);
+  }
+}
+
+var firstSel = null;
+var foundWords = 0;
+function selectCell(r,c){
+  if(!firstSel){ firstSel = [r,c]; cellEls[r][c].classList.add('selected'); return; }
+  var r0=firstSel[0], c0=firstSel[1];
+  cellEls[r0][c0].classList.remove('selected');
+  checkSelection(r0,c0,r,c);
+  firstSel = null;
+}
+function checkSelection(r0,c0,r1,c1){
+  for(var p=0;p<placements.length;p++){
+    var cells = placements[p].cells;
+    var s = cells[0], e = cells[cells.length-1];
+    if((s[0]===r0&&s[1]===c0&&e[0]===r1&&e[1]===c1) || (s[0]===r1&&s[1]===c1&&e[0]===r0&&e[1]===c0)){
+      if(document.getElementById('chip-'+placements[p].word).classList.contains('found')) return;
+      cells.forEach(function(cell){ cellEls[cell[0]][cell[1]].classList.add('found'); });
+      document.getElementById('chip-'+placements[p].word).classList.add('found');
+      foundWords++;
+      if(foundWords === WORDS.length){
+        document.getElementById('winBanner').innerHTML = '<div class="win-banner"><h2 style="margin-top:0;font-family:var(--serif);">🎉 أحسنت!</h2><p>وجدت كل الكلمات!</p><button class="btn btn-gold" onclick="location.reload()">↻ العب مرة أخرى</button></div>';
+      }
+      return;
+    }
+  }
+}
+</script>
+</body>
+</html>

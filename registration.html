@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المعهد الأكاديمي الحديث — إنشاء حساب</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C2B39; --ink-2:#111C26;
+    --chalk:#F5F1E6; --chalk-dim:#E4DBC6;
+    --gold:#C99A3E; --gold-soft:#E7C67B;
+    --terminal:#5FBF8A; --pencil:#B24A36;
+    --serif:'IBM Plex Serif',serif; --sans:'IBM Plex Sans',sans-serif; --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--sans);background:var(--chalk);color:var(--ink);}
+  .wrap{max-width:720px;margin:0 auto;padding:60px 24px 90px;}
+  h1,h2,h3{font-family:var(--serif);margin:0 0 10px;}
+  p{color:#4a5a68;line-height:1.55;}
+  .eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--pencil);margin-bottom:10px;}
+  .screen{display:none;animation:fade .3s ease;}
+  .screen.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  .backlink{font-size:.85rem;color:#8a7d5c;cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-bottom:22px;}
+  .backlink:hover{color:var(--ink);}
+
+  .field{margin-bottom:20px;}
+  .field label{display:block;font-size:.85rem;font-weight:600;margin-bottom:7px;}
+  .field .help{font-size:.8rem;color:#8a7d5c;margin-top:6px;line-height:1.4;}
+  .field input[type=email],.field input[type=text],.field input[type=date]{
+    width:100%;padding:13px 15px;border:1px solid #d9cfb4;border-radius:6px;
+    font-family:var(--sans);font-size:.95rem;background:#fff;color:var(--ink);
+  }
+  .field input:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold);}
+
+  .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:26px;}
+  .choice-card{
+    border:1px solid #d9cfb4;border-radius:10px;padding:26px 22px;background:#FAF7EF;
+    cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;
+  }
+  .choice-card:hover{transform:translateY(-3px);box-shadow:0 14px 28px -12px rgba(0,0,0,.15);}
+  .choice-card.picked{border-color:var(--gold);background:#FCF3DE;}
+  .choice-card .ic{font-family:var(--mono);color:var(--terminal);font-size:.78rem;margin-bottom:10px;}
+  .choice-card h3{font-size:1.08rem;}
+  .choice-card p{font-size:.86rem;margin:0;}
+
+  .cert-banner{
+    display:flex;gap:12px;align-items:flex-start;
+    background:var(--ink);color:var(--chalk-dim);border-radius:8px;
+    padding:16px 18px;margin:22px 0;font-size:.86rem;line-height:1.5;
+  }
+  .cert-banner .icon{font-family:var(--mono);color:var(--gold-soft);font-size:1.1rem;flex-shrink:0;}
+  .cert-banner strong{color:var(--chalk);}
+
+  .toggle-row{
+    display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px dashed #cbbf9c;
+    border-radius:8px;margin:22px 0;background:#FAF7EF;font-size:.88rem;cursor:pointer;
+  }
+  .toggle-row input{width:18px;height:18px;accent-color:var(--gold);}
+
+  .btn{
+    display:inline-block;padding:13px 24px;border-radius:5px;font-weight:600;font-size:.95rem;
+    cursor:pointer;border:1px solid transparent;font-family:var(--sans);
+  }
+  .btn-gold{background:var(--gold);color:var(--ink-2);}
+  .btn-gold:disabled{opacity:.4;cursor:not-allowed;}
+  .btn-outline{border-color:#cbbf9c;color:var(--ink);background:transparent;}
+  .btn-block{width:100%;text-align:center;font-size:1rem;padding:15px;}
+
+  .nav-row{display:flex;justify-content:flex-end;margin-top:8px;}
+
+  .result-card{border-radius:12px;padding:36px;text-align:center;background:#e8f6ee;border:1px solid #bfe3cd;}
+  .result-card .badge{
+    display:inline-block;font-family:var(--mono);font-weight:700;font-size:1.3rem;
+    padding:9px 20px;border-radius:6px;background:var(--ink);color:var(--chalk);margin-bottom:16px;
+  }
+  .summary-list{text-align:left;background:#FAF7EF;border:1px solid #d9cfb4;border-radius:8px;padding:18px 20px;margin-top:18px;font-size:.9rem;}
+  .summary-list div{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #ece3cc;}
+  .summary-list div:last-child{border-bottom:none;}
+  .summary-list span:first-child{color:#8a7d5c;}
+  .summary-list span:last-child{font-weight:600;}
+
+  .note-box{
+    margin-top:22px;padding:16px 18px;border-radius:8px;background:var(--ink);color:var(--chalk-dim);
+    font-size:.83rem;text-align:left;line-height:1.5;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- SCREEN 0: EMAIL + WHY -->
+  <div class="screen active" id="s0">
+    <div class="eyebrow">Create your account</div>
+    <h1>Let's get you started</h1>
+    <p>One email, and one question about what you're here for — everything else depends on your answer.</p>
+
+    <div class="field">
+      <label for="email">Email address</label>
+      <input type="email" id="email" placeholder="you@example.com" oninput="validateS0()">
+    </div>
+
+    <p style="font-weight:600;color:var(--ink);margin-bottom:0;">Why are you learning with us?</p>
+    <div class="choice-grid">
+      <div class="choice-card" id="cardFun" onclick="pickReason('fun')">
+        <div class="ic">// just for me</div>
+        <h3>For fun / self-improvement</h3>
+        <p>No certificate needed. A nickname is fine — you can add your real details later if that changes.</p>
+      </div>
+      <div class="choice-card" id="cardCert" onclick="pickReason('cert')">
+        <div class="ic">// for the record</div>
+        <h3>Working toward a certificate</h3>
+        <p>We'll ask for your real name and date of birth, since a certificate needs to match who you actually are.</p>
+      </div>
+    </div>
+
+    <div class="toggle-row" onclick="toggleChild(event)">
+      <input type="checkbox" id="isChild" onclick="event.stopPropagation()">
+      <label for="isChild" style="cursor:pointer;margin:0;">This account is for a child (I'm the parent/guardian signing up on their behalf)</label>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-gold" id="s0Next" disabled onclick="goToDetails()">Continue</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 1: DETAILS (fun, adult) -->
+  <div class="screen" id="s1fun">
+    <div class="backlink" onclick="goTo('s0')">&larr; back</div>
+    <div class="eyebrow">Just a couple details</div>
+    <h2>What should we call you?</h2>
+    <p>Since this is just for you, any name or nickname works.</p>
+    <div class="field">
+      <label for="funName">Display name</label>
+      <input type="text" id="funName" placeholder="e.g. Sam, or a nickname" oninput="validateFun()">
+    </div>
+    <div class="field">
+      <label for="funDob">Date of birth <span style="font-weight:400;color:#8a7d5c;">(optional — only used to suggest the right course level)</span></label>
+      <input type="date" id="funDob">
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-gold" id="funNext" disabled onclick="finish('fun')">Create account</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 1: DETAILS (certification, adult) -->
+  <div class="screen" id="s1cert">
+    <div class="backlink" onclick="goTo('s0')">&larr; back</div>
+    <div class="eyebrow">For your certificate</div>
+    <h2>Let's get your name right — the first time</h2>
+    <div class="cert-banner">
+      <div class="icon">!</div>
+      <div><strong>This name goes on your certificate.</strong> Please enter it exactly as it appears on your ID or official documents, not a nickname. You can still choose a separate display name for the course later.</div>
+    </div>
+    <div class="field">
+      <label for="certName">Full legal name</label>
+      <input type="text" id="certName" placeholder="As it should appear on your certificate" oninput="validateCert()">
+    </div>
+    <div class="field">
+      <label for="certDob">Date of birth</label>
+      <input type="date" id="certDob" oninput="validateCert()">
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-gold" id="certNext" disabled onclick="finish('cert')">Create account</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 1: DETAILS (child, parent-managed) -->
+  <div class="screen" id="s1child">
+    <div class="backlink" onclick="goTo('s0')">&larr; back</div>
+    <div class="eyebrow">Parent-managed account</div>
+    <h2>A few details about your child</h2>
+    <p>Your email stays the account login. Your child never has their own contact details on file — you'll manage everything from your dashboard.</p>
+    <div class="field">
+      <label for="childFirst">Child's first name</label>
+      <input type="text" id="childFirst" placeholder="First name only" oninput="validateChild()">
+    </div>
+    <div class="field">
+      <label for="childDob">Child's date of birth</label>
+      <input type="date" id="childDob" oninput="validateChild()">
+    </div>
+    <div class="field" id="childCertField" style="display:none;">
+      <label for="childLegal">Child's full legal name <span style="font-weight:400;color:#8a7d5c;">(for the certificate)</span></label>
+      <input type="text" id="childLegal" placeholder="As it should appear on the certificate" oninput="validateChild()">
+      <div class="help">You'll be asked to confirm this again before any certificate is issued.</div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-gold" id="childNext" disabled onclick="finish('child')">Create account</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: RESULT -->
+  <div class="screen" id="s2result">
+    <div id="resultContent"></div>
+  </div>
+
+</div>
+
+<script>
+let reason = null; // 'fun' | 'cert'
+let isChildAccount = false;
+
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function validateS0(){
+  checkS0Ready();
+}
+
+function pickReason(r){
+  reason = r;
+  document.getElementById('cardFun').classList.toggle('picked', r==='fun');
+  document.getElementById('cardCert').classList.toggle('picked', r==='cert');
+  const childCertField = document.getElementById('childCertField');
+  if(childCertField) childCertField.style.display = (isChildAccount && r==='cert') ? 'block' : 'none';
+  checkS0Ready();
+}
+
+function toggleChild(e){
+  const box = document.getElementById('isChild');
+  if(e.target.tagName !== 'INPUT'){ box.checked = !box.checked; }
+  isChildAccount = box.checked;
+  const childCertField = document.getElementById('childCertField');
+  if(childCertField) childCertField.style.display = (isChildAccount && reason==='cert') ? 'block' : 'none';
+  checkS0Ready();
+}
+
+function checkS0Ready(){
+  const email = document.getElementById('email').value.trim();
+  const valid = email.includes('@') && email.includes('.') && reason !== null;
+  document.getElementById('s0Next').disabled = !valid;
+}
+
+function goToDetails(){
+  if(isChildAccount){
+    goTo('s1child');
+    validateChild();
+  } else if(reason === 'fun'){
+    goTo('s1fun');
+    validateFun();
+  } else {
+    goTo('s1cert');
+    validateCert();
+  }
+}
+
+function validateFun(){
+  const name = document.getElementById('funName').value.trim();
+  document.getElementById('funNext').disabled = name.length < 1;
+}
+function validateCert(){
+  const name = document.getElementById('certName').value.trim();
+  const dob = document.getElementById('certDob').value;
+  document.getElementById('certNext').disabled = !(name.length > 1 && dob);
+}
+function validateChild(){
+  const first = document.getElementById('childFirst').value.trim();
+  const dob = document.getElementById('childDob').value;
+  let ok = first.length > 0 && dob;
+  if(reason === 'cert'){
+    const legal = document.getElementById('childLegal').value.trim();
+    ok = ok && legal.length > 1;
+  }
+  document.getElementById('childNext').disabled = !ok;
+}
+
+function finish(kind){
+  const email = document.getElementById('email').value.trim();
+  let rows = [];
+  let title = '';
+  let note = '';
+
+  if(kind === 'fun'){
+    const name = document.getElementById('funName').value.trim();
+    const dob = document.getElementById('funDob').value;
+    title = `Welcome, ${name}!`;
+    rows = [
+      ['Account email', email],
+      ['Display name', name],
+      ['Date of birth', dob || 'Not provided'],
+      ['Track', 'Learning for fun — no certificate']
+    ];
+    note = 'You can switch to the certification track any time from your account settings. We\'ll ask for your legal name only when you do.';
+  } else if(kind === 'cert'){
+    const name = document.getElementById('certName').value.trim();
+    const dob = document.getElementById('certDob').value;
+    title = `Welcome, ${name}!`;
+    rows = [
+      ['Account email', email],
+      ['Legal name (for certificate)', name],
+      ['Date of birth', dob],
+      ['Track', 'Certification']
+    ];
+    note = 'You can still pick a separate display name for day-to-day learning. Your legal name is only used on official records and will be confirmed again before any certificate is issued.';
+  } else {
+    const first = document.getElementById('childFirst').value.trim();
+    const dob = document.getElementById('childDob').value;
+    const legal = document.getElementById('childLegal') ? document.getElementById('childLegal').value.trim() : '';
+    title = `${first}'s account is ready`;
+    rows = [
+      ['Parent/guardian email', email],
+      ['Child\'s first name', first],
+      ['Child\'s date of birth', dob],
+      ['Track', reason === 'cert' ? 'Certification' : 'Learning for fun — no certificate']
+    ];
+    if(reason === 'cert' && legal){
+      rows.push(['Legal name (for certificate)', legal]);
+    }
+    note = 'Your child has no separate login or contact details on file — everything is managed from your parent dashboard, including switching tracks later.';
+  }
+
+  goTo('s2result');
+  document.getElementById('resultContent').innerHTML = `
+    <div class="result-card">
+      <div class="badge">Account created</div>
+      <h2 style="margin-top:0;">${title}</h2>
+      <div class="summary-list">
+        ${rows.map(r=>`<div><span>${r[0]}</span><span>${r[1]}</span></div>`).join('')}
+      </div>
+      <button class="btn btn-gold btn-block" style="margin-top:22px;" onclick="alert('This would take you to your dashboard in the live platform.')">Go to my dashboard →</button>
+      <div class="note-box">${note}</div>
+    </div>`;
+}
+</script>
+</body>
+</html>

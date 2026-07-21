@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>قاموس الوحدة — المعهد الأكاديمي الحديث</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C2B39; --ink-2:#111C26;
+    --chalk:#F5F1E6; --chalk-dim:#E4DBC6;
+    --gold:#C99A3E; --gold-soft:#E7C67B;
+    --terminal:#5FBF8A; --pencil:#B24A36;
+    --serif:'IBM Plex Serif',serif; --sans:'IBM Plex Sans',sans-serif; --mono:'IBM Plex Mono',monospace;
+    --arabic:'Noto Sans Arabic',sans-serif; --ipa:'IBM Plex Mono','Noto Sans',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--sans);background:linear-gradient(180deg,#F7F3E9 0%,#F5F1E6 100%);color:var(--ink);}
+  .wrap{max-width:780px;margin:0 auto;padding:24px 20px 70px;}
+  p{color:#4a5a68;line-height:1.6;}
+  .ar{direction:rtl;text-align:right;font-family:var(--arabic);}
+  .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .badge{font-family:var(--mono);font-weight:700;font-size:.8rem;color:var(--chalk);background:var(--ink);border-radius:8px;padding:6px 12px;}
+  .btn-outline{border-color:#d5c9a3;color:var(--ink);background:transparent;padding:6px 12px;font-size:.78rem;border-radius:10px;border:1.5px solid #d5c9a3;text-decoration:none;font-family:var(--sans);}
+  h1{font-family:var(--serif);font-size:1.5rem;margin:0 0 6px;}
+  .search-box{
+    width:100%;padding:12px 16px;border-radius:12px;border:1.5px solid #e6dcc2;font-family:var(--sans);
+    font-size:.95rem;margin:14px 0 20px;direction:rtl;background:#fff;
+  }
+  .letter-group{margin-bottom:22px;}
+  .letter-title{
+    font-family:var(--mono);font-weight:700;font-size:1.2rem;color:var(--pencil);
+    border-bottom:2px solid var(--gold-soft);padding-bottom:6px;margin-bottom:10px;direction:ltr;
+  }
+  .word-row{
+    background:#fff;border:1px solid #ecdfc2;border-radius:12px;
+    padding:10px 14px;margin-bottom:8px;box-shadow:0 3px 10px -5px rgba(60,50,20,.06);
+  }
+  .word-row-top{display:flex;align-items:center;gap:10px;direction:ltr;}
+  .word-row .en{font-family:var(--serif);font-weight:700;font-size:1rem;}
+  .word-row .ipa-tag{font-family:var(--ipa);font-size:.8rem;color:var(--pencil);}
+  .word-row .play-btn{
+    font-family:var(--mono);font-size:.68rem;border:1px solid var(--terminal);color:var(--terminal);
+    background:#f2fbf6;border-radius:20px;padding:4px 10px;cursor:pointer;flex-shrink:0;margin-inline-start:auto;
+  }
+  .word-row-bottom{display:flex;align-items:center;gap:8px;margin-top:6px;direction:rtl;flex-wrap:wrap;}
+  .word-row .ar-mean{font-family:var(--arabic);direction:rtl;color:#4a4132;font-size:.9rem;flex:1;min-width:0;}
+  .word-row .lesson-tag{
+    font-family:var(--mono);font-size:.64rem;color:#8a7d5c;background:#F1EBDB;border-radius:10px;
+    padding:2px 7px;flex-shrink:0;direction:ltr;
+  }
+  .word-row.hidden{display:none;}
+  .note-box{margin-top:20px;padding:14px 16px;border-radius:12px;background:var(--ink);color:var(--chalk-dim);font-size:.82rem;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-bar">
+    <div class="badge">GLOSSARY</div>
+    <a href="index.html" class="btn-outline">🏠 الرئيسية</a>
+  </div>
+  <h1 class="ar">قاموس الوحدة</h1>
+  <p class="ar">كل الكلمات التي تعلّمتها حتى الآن (حروف A إلى Z كاملة)، مع معانيها. اضغط ▶ لسماع أي كلمة.</p>
+  <input type="text" class="search-box" id="searchBox" placeholder="ابحث عن كلمة..." oninput="filterWords()">
+  <div id="glossaryContainer"></div>
+  <div class="note-box ar">هذا القاموس يكبر تلقائياً مع كل حرف جديد نضيفه.</div>
+</div>
+
+<script>
+var GLOSSARY_FLAT = [
+  {w:"ant", ipa:"/ænt/", ar:"نملة", lesson:"A"}, {w:"cat", ipa:"/kæt/", ar:"قطة", lesson:"A"}, {w:"face", ipa:"/feɪs/", ar:"وجه", lesson:"A"}, {w:"cake", ipa:"/keɪk/", ar:"كعكة", lesson:"A"},
+  {w:"rain", ipa:"/reɪn/", ar:"مطر", lesson:"A"}, {w:"train", ipa:"/treɪn/", ar:"قطار", lesson:"A"}, {w:"ball", ipa:"/bɔːl/", ar:"كرة", lesson:"A"}, {w:"wall", ipa:"/wɔːl/", ar:"جدار", lesson:"A"},
+  {w:"car", ipa:"/kɑːr/", ar:"سيارة", lesson:"A"}, {w:"star", ipa:"/stɑːr/", ar:"نجمة", lesson:"A"}, {w:"said", ipa:"/sɛd/", ar:"قال", lesson:"A"}, {w:"was", ipa:"/wʌz/", ar:"كان", lesson:"A"},
+  {w:"many", ipa:"/ˈmɛni/", ar:"كثير", lesson:"A"}, {w:"any", ipa:"/ˈɛni/", ar:"أيّ", lesson:"A"}, {w:"aunt", ipa:"/ænt/", ar:"عمة / خالة", lesson:"A"},
+  {w:"bear", ipa:"/bɛr/", ar:"دب", lesson:"B"}, {w:"boat", ipa:"/boʊt/", ar:"قارب", lesson:"B"}, {w:"bag", ipa:"/bæg/", ar:"حقيبة", lesson:"B"}, {w:"bee", ipa:"/biː/", ar:"نحلة", lesson:"B"},
+  {w:"thumb", ipa:"/θʌm/", ar:"إبهام", lesson:"B"}, {w:"comb", ipa:"/koʊm/", ar:"مشط", lesson:"B"}, {w:"lamb", ipa:"/læm/", ar:"خروف", lesson:"B"}, {w:"climb", ipa:"/klaɪm/", ar:"يتسلّق", lesson:"B"},
+  {w:"cup", ipa:"/kʌp/", ar:"كوب", lesson:"C"}, {w:"corn", ipa:"/kɔːrn/", ar:"ذرة", lesson:"C"}, {w:"city", ipa:"/ˈsɪti/", ar:"مدينة", lesson:"C"}, {w:"cell", ipa:"/sɛl/", ar:"خلية / هاتف", lesson:"C"},
+  {w:"chair", ipa:"/tʃɛr/", ar:"كرسي", lesson:"C"}, {w:"church", ipa:"/tʃɜːrtʃ/", ar:"كنيسة", lesson:"C"}, {w:"muscle", ipa:"/ˈmʌsəl/", ar:"عضلة", lesson:"C"}, {w:"cello", ipa:"/ˈtʃɛloʊ/", ar:"تشيلو (آلة موسيقية)", lesson:"C"},
+  {w:"dog", ipa:"/dɔːg/", ar:"كلب", lesson:"D"}, {w:"door", ipa:"/dɔːr/", ar:"باب", lesson:"D"}, {w:"played", ipa:"/pleɪd/", ar:"لعب", lesson:"D"}, {w:"called", ipa:"/kɔːld/", ar:"اتصل", lesson:"D"},
+  {w:"walked", ipa:"/wɔːkt/", ar:"مشى", lesson:"D"}, {w:"watched", ipa:"/wɑːtʃt/", ar:"شاهد", lesson:"D"}, {w:"wanted", ipa:"/ˈwɑːntɪd/", ar:"أراد", lesson:"D"}, {w:"needed", ipa:"/ˈniːdɪd/", ar:"احتاج", lesson:"D"},
+  {w:"Wednesday", ipa:"/ˈwɛnzdeɪ/", ar:"الأربعاء", lesson:"D"},
+  {w:"bed", ipa:"/bɛd/", ar:"سرير", lesson:"E"}, {w:"ten", ipa:"/tɛn/", ar:"عشرة", lesson:"E"}, {w:"tree", ipa:"/triː/", ar:"شجرة", lesson:"E"}, {w:"eat", ipa:"/iːt/", ar:"يأكل", lesson:"E"},
+  {w:"tea", ipa:"/tiː/", ar:"شاي", lesson:"E"}, {w:"like", ipa:"/laɪk/", ar:"يحب", lesson:"E"}, {w:"home", ipa:"/hoʊm/", ar:"منزل", lesson:"E"},
+  {w:"her", ipa:"/hɝ/", ar:"لها", lesson:"E"}, {w:"term", ipa:"/tɝm/", ar:"فصل دراسي / مصطلح", lesson:"E"},
+  {w:"about", ipa:"/əˈbaʊt/", ar:"حول / بخصوص", lesson:"E"}, {w:"item", ipa:"/ˈaɪtəm/", ar:"عنصر", lesson:"E"},
+  {w:"bread", ipa:"/brɛd/", ar:"خبز", lesson:"E"},
+  {w:"fish", ipa:"/fɪʃ/", ar:"سمكة", lesson:"F"}, {w:"fork", ipa:"/fɔːrk/", ar:"شوكة", lesson:"F"}, {w:"farm", ipa:"/fɑːrm/", ar:"مزرعة", lesson:"F"}, {w:"of", ipa:"/ʌv/", ar:"مِن / ملكية", lesson:"F"},
+  {w:"goat", ipa:"/goʊt/", ar:"ماعز", lesson:"G"}, {w:"flag", ipa:"/flæg/", ar:"علم", lesson:"G"}, {w:"log", ipa:"/lɔːg/", ar:"جذع خشب", lesson:"G"},
+  {w:"giraffe", ipa:"/dʒəˈræf/", ar:"زرافة", lesson:"G"}, {w:"gem", ipa:"/dʒɛm/", ar:"جوهرة", lesson:"G"}, {w:"girl", ipa:"/gɜːrl/", ar:"فتاة", lesson:"G"}, {w:"give", ipa:"/gɪv/", ar:"يعطي", lesson:"G"},
+  {w:"sign", ipa:"/saɪn/", ar:"يوقّع / لافتة", lesson:"G"}, {w:"gnome", ipa:"/noʊm/", ar:"قزم", lesson:"G"},
+  {w:"hat", ipa:"/hæt/", ar:"قبعة", lesson:"H"}, {w:"house", ipa:"/haʊs/", ar:"منزل", lesson:"H"}, {w:"hand", ipa:"/hænd/", ar:"يد", lesson:"H"},
+  {w:"hour", ipa:"/aʊər/", ar:"ساعة (وقت)", lesson:"H"}, {w:"honest", ipa:"/ˈɑːnɪst/", ar:"صادق", lesson:"H"},
+  {w:"pig", ipa:"/pɪg/", ar:"خنزير", lesson:"I"}, {w:"six", ipa:"/sɪks/", ar:"ستة", lesson:"I"}, {w:"bike", ipa:"/baɪk/", ar:"دراجة", lesson:"I"}, {w:"time", ipa:"/taɪm/", ar:"وقت", lesson:"I"},
+  {w:"night", ipa:"/naɪt/", ar:"ليل", lesson:"I"}, {w:"light", ipa:"/laɪt/", ar:"ضوء", lesson:"I"}, {w:"machine", ipa:"/məˈʃiːn/", ar:"آلة", lesson:"I"}, {w:"ski", ipa:"/skiː/", ar:"يتزلج", lesson:"I"},
+  {w:"jacket", ipa:"/ˈdʒækɪt/", ar:"سترة", lesson:"J"}, {w:"jump", ipa:"/dʒʌmp/", ar:"يقفز", lesson:"J"}, {w:"jar", ipa:"/dʒɑːr/", ar:"جرة / برطمان", lesson:"J"},
+  {w:"kite", ipa:"/kaɪt/", ar:"طائرة ورقية", lesson:"K"}, {w:"king", ipa:"/kɪŋ/", ar:"ملك", lesson:"K"}, {w:"sock", ipa:"/sɑːk/", ar:"جورب", lesson:"K"}, {w:"duck", ipa:"/dʌk/", ar:"بطة", lesson:"K"},
+  {w:"knee", ipa:"/niː/", ar:"ركبة", lesson:"K"}, {w:"knife", ipa:"/naɪf/", ar:"سكين", lesson:"K"},
+  {w:"lion", ipa:"/ˈlaɪən/", ar:"أسد", lesson:"L"}, {w:"leaf", ipa:"/liːf/", ar:"ورقة شجر", lesson:"L"}, {w:"lamp", ipa:"/læmp/", ar:"مصباح", lesson:"L"},
+  {w:"walk", ipa:"/wɔːk/", ar:"يمشي", lesson:"L"}, {w:"half", ipa:"/hæf/", ar:"نصف", lesson:"L"},
+  {w:"moon", ipa:"/muːn/", ar:"قمر", lesson:"M"}, {w:"monkey", ipa:"/ˈmʌŋki/", ar:"قرد", lesson:"M"}, {w:"milk", ipa:"/mɪlk/", ar:"حليب", lesson:"M"},
+  {w:"nest", ipa:"/nɛst/", ar:"عش", lesson:"N"}, {w:"nose", ipa:"/noʊz/", ar:"أنف", lesson:"N"}, {w:"ring", ipa:"/rɪŋ/", ar:"خاتم", lesson:"N"}, {w:"sing", ipa:"/sɪŋ/", ar:"يغنّي", lesson:"N"},
+  {w:"autumn", ipa:"/ˈɔːtəm/", ar:"الخريف", lesson:"N"}, {w:"column", ipa:"/ˈkɑːləm/", ar:"عمود", lesson:"N"},
+  {w:"pot", ipa:"/pɑːt/", ar:"قدر", lesson:"O"}, {w:"bone", ipa:"/boʊn/", ar:"عظمة", lesson:"O"}, {w:"rose", ipa:"/roʊz/", ar:"وردة", lesson:"O"},
+  {w:"coat", ipa:"/koʊt/", ar:"معطف", lesson:"O"}, {w:"one", ipa:"/wʌn/", ar:"واحد", lesson:"O"},
+  {w:"food", ipa:"/fuːd/", ar:"طعام", lesson:"O"},
+  {w:"cow", ipa:"/kaʊ/", ar:"بقرة", lesson:"O"},
+  {w:"boy", ipa:"/bɔɪ/", ar:"صبي", lesson:"O"}, {w:"coin", ipa:"/kɔɪn/", ar:"عملة معدنية", lesson:"O"},
+  {w:"pen", ipa:"/pɛn/", ar:"قلم", lesson:"P"}, {w:"pizza", ipa:"/ˈpiːtsə/", ar:"بيتزا", lesson:"P"}, {w:"phone", ipa:"/foʊn/", ar:"هاتف", lesson:"P"}, {w:"elephant", ipa:"/ˈɛləfənt/", ar:"فيل", lesson:"P"},
+  {w:"psychology", ipa:"/saɪˈkɑːlədʒi/", ar:"علم النفس", lesson:"P"}, {w:"pterodactyl", ipa:"/ˌtɛrəˈdæktɪl/", ar:"زاحف طائر منقرض", lesson:"P"},
+  {w:"queen", ipa:"/kwiːn/", ar:"ملكة", lesson:"Q"}, {w:"quick", ipa:"/kwɪk/", ar:"سريع", lesson:"Q"}, {w:"unique", ipa:"/juˈniːk/", ar:"فريد", lesson:"Q"}, {w:"queue", ipa:"/kjuː/", ar:"طابور", lesson:"Q"},
+  {w:"rabbit", ipa:"/ˈræbɪt/", ar:"أرنب", lesson:"R"}, {w:"red", ipa:"/rɛd/", ar:"أحمر", lesson:"R"},
+  {w:"snake", ipa:"/sneɪk/", ar:"ثعبان", lesson:"S"}, {w:"sun", ipa:"/sʌn/", ar:"شمس", lesson:"S"}, {w:"is", ipa:"/ɪz/", ar:"يكون", lesson:"S"}, {w:"his", ipa:"/hɪz/", ar:"له", lesson:"S"},
+  {w:"ship", ipa:"/ʃɪp/", ar:"سفينة", lesson:"S"}, {w:"shoe", ipa:"/ʃuː/", ar:"حذاء", lesson:"S"},
+  {w:"television", ipa:"/ˈtɛləvɪʒən/", ar:"تلفاز", lesson:"S"}, {w:"treasure", ipa:"/ˈtrɛʒər/", ar:"كنز", lesson:"S"},
+  {w:"sugar", ipa:"/ˈʃʊgər/", ar:"سكر", lesson:"S"}, {w:"sure", ipa:"/ʃʊr/", ar:"متأكد", lesson:"S"},
+  {w:"turtle", ipa:"/ˈtɜːrtəl/", ar:"سلحفاة", lesson:"T"}, {w:"top", ipa:"/tɑːp/", ar:"أعلى / قمة", lesson:"T"}, {w:"think", ipa:"/θɪŋk/", ar:"يفكر", lesson:"T"}, {w:"three", ipa:"/θriː/", ar:"ثلاثة", lesson:"T"},
+  {w:"this", ipa:"/ðɪs/", ar:"هذا", lesson:"T"}, {w:"that", ipa:"/ðæt/", ar:"ذلك", lesson:"T"}, {w:"the", ipa:"/ðə/ أو /ðiː/", ar:"أداة تعريف", lesson:"T"},
+  {w:"listen", ipa:"/ˈlɪsən/", ar:"يستمع", lesson:"T"}, {w:"castle", ipa:"/ˈkæsəl/", ar:"قلعة", lesson:"T"},
+  {w:"cube", ipa:"/kjuːb/", ar:"مكعب", lesson:"U"}, {w:"cute", ipa:"/kjuːt/", ar:"لطيف", lesson:"U"}, {w:"put", ipa:"/pʊt/", ar:"يضع", lesson:"U"}, {w:"full", ipa:"/fʊl/", ar:"ممتلئ", lesson:"U"},
+  {w:"guitar", ipa:"/gɪˈtɑːr/", ar:"جيتار", lesson:"U"}, {w:"guess", ipa:"/gɛs/", ar:"يخمّن", lesson:"U"},
+  {w:"umbrella", ipa:"/ʌmˈbrɛlə/", ar:"مظلة", lesson:"U"}, {w:"up", ipa:"/ʌp/", ar:"للأعلى", lesson:"U"},
+  {w:"van", ipa:"/væn/", ar:"شاحنة صغيرة", lesson:"V"}, {w:"violin", ipa:"/ˌvaɪəˈlɪn/", ar:"كمان", lesson:"V"},
+  {w:"window", ipa:"/ˈwɪndoʊ/", ar:"نافذة", lesson:"W"}, {w:"water", ipa:"/ˈwɔːtər/", ar:"ماء", lesson:"W"}, {w:"what", ipa:"/wʌt/", ar:"ماذا", lesson:"W"}, {w:"when", ipa:"/wɛn/", ar:"متى", lesson:"W"},
+  {w:"who", ipa:"/huː/", ar:"مَن", lesson:"W"}, {w:"whole", ipa:"/hoʊl/", ar:"كامل", lesson:"W"},
+  {w:"write", ipa:"/raɪt/", ar:"يكتب", lesson:"W"}, {w:"wrong", ipa:"/rɔːŋ/", ar:"خطأ", lesson:"W"},
+  {w:"box", ipa:"/bɑːks/", ar:"صندوق", lesson:"X"}, {w:"fox", ipa:"/fɑːks/", ar:"ثعلب", lesson:"X"}, {w:"exam", ipa:"/ɪgˈzæm/", ar:"اختبار", lesson:"X"},
+  {w:"exact", ipa:"/ɪgˈzækt/", ar:"دقيق / بالضبط", lesson:"X"}, {w:"X-ray", ipa:"/ˈɛksreɪ/", ar:"أشعة سينية", lesson:"X"}, {w:"xylophone", ipa:"/ˈzaɪləfoʊn/", ar:"آلة الإكسيلوفون", lesson:"X"},
+  {w:"yes", ipa:"/jɛs/", ar:"نعم", lesson:"Y"}, {w:"yellow", ipa:"/ˈjɛloʊ/", ar:"أصفر", lesson:"Y"}, {w:"happy", ipa:"/ˈhæpi/", ar:"سعيد", lesson:"Y"}, {w:"baby", ipa:"/ˈbeɪbi/", ar:"طفل رضيع", lesson:"Y"},
+  {w:"sky", ipa:"/skaɪ/", ar:"سماء", lesson:"Y"}, {w:"cry", ipa:"/kraɪ/", ar:"يبكي", lesson:"Y"},
+  {w:"zebra", ipa:"/ˈziːbrə/", ar:"حمار وحشي", lesson:"Z"}, {w:"zero", ipa:"/ˈzɪroʊ/", ar:"صفر", lesson:"Z"}
+];
+
+function speak(text){
+  var filename = 'audio/' + text.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') + '.mp3';
+  var audio = new Audio();
+  var handled = false;
+  audio.addEventListener('error', function(){ if(handled) return; handled = true; speakTTS(text); });
+  audio.addEventListener('canplay', function(){ if(handled) return; handled = true; audio.play().catch(function(){ speakTTS(text); }); });
+  audio.src = filename;
+}
+function speakTTS(text){
+  if(!('speechSynthesis' in window)) return;
+  var u = new SpeechSynthesisUtterance(text); u.rate = 0.9; u.lang = 'en-US';
+  window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+}
+
+// Group dynamically by the word's REAL first letter (dictionary order),
+// not by which lesson introduced it — e.g. "many" appears under M, even though it was taught in Lesson A.
+var GLOSSARY = {};
+GLOSSARY_FLAT.forEach(function(item){
+  var firstLetter = item.w.charAt(0).toUpperCase();
+  if(!GLOSSARY[firstLetter]) GLOSSARY[firstLetter] = [];
+  GLOSSARY[firstLetter].push(item);
+});
+var sortedLetters = Object.keys(GLOSSARY).sort();
+sortedLetters.forEach(function(letter){
+  GLOSSARY[letter].sort(function(a,b){ return a.w.localeCompare(b.w); });
+});
+
+var container = document.getElementById('glossaryContainer');
+sortedLetters.forEach(function(letter){
+  var group = document.createElement('div');
+  group.className = 'letter-group';
+  var html = '<div class="letter-title">'+letter+'</div>';
+  GLOSSARY[letter].forEach(function(item){
+    html += '<div class="word-row" data-word="'+item.w.toLowerCase()+'">'+
+      '<div class="word-row-top"><span class="en">'+item.w+'</span><span class="ipa-tag">'+item.ipa+'</span>'+
+      '<button class="play-btn" onclick="speak(\''+item.w+'\')">▶</button></div>'+
+      '<div class="word-row-bottom"><span class="ar-mean">'+item.ar+'</span><span class="lesson-tag">درس '+item.lesson+'</span></div>'+
+      '</div>';
+  });
+  group.innerHTML = html;
+  container.appendChild(group);
+});
+
+function filterWords(){
+  var q = document.getElementById('searchBox').value.trim().toLowerCase();
+  document.querySelectorAll('.word-row').forEach(function(row){
+    var match = row.dataset.word.indexOf(q) !== -1;
+    row.classList.toggle('hidden', q.length > 0 && !match);
+  });
+  document.querySelectorAll('.letter-group').forEach(function(group){
+    var visible = group.querySelectorAll('.word-row:not(.hidden)').length;
+    group.style.display = visible === 0 ? 'none' : 'block';
+  });
+}
+</script>
+</body>
+</html>

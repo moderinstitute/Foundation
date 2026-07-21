@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مراجعة ممتعة A-F — المعهد الأكاديمي الحديث</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C2B39; --ink-2:#111C26;
+    --chalk:#F5F1E6; --chalk-dim:#E4DBC6;
+    --gold:#C99A3E; --gold-soft:#E7C67B;
+    --terminal:#5FBF8A; --pencil:#B24A36;
+    --serif:'IBM Plex Serif',serif; --sans:'IBM Plex Sans',sans-serif; --mono:'IBM Plex Mono',monospace;
+    --arabic:'Noto Sans Arabic',sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--sans);background:linear-gradient(180deg,#F7F3E9 0%,#F5F1E6 100%);color:var(--ink);}
+  .wrap{max-width:640px;margin:0 auto;padding:24px 20px 70px;}
+  p{color:#4a5a68;line-height:1.6;}
+  .ar{direction:rtl;text-align:right;font-family:var(--arabic);}
+  .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .badge{font-family:var(--mono);font-weight:700;font-size:.8rem;color:var(--chalk);background:var(--ink);border-radius:8px;padding:6px 12px;}
+  .btn-outline{border-color:#d5c9a3;color:var(--ink);background:transparent;padding:6px 12px;font-size:.78rem;border-radius:10px;border:1.5px solid #d5c9a3;text-decoration:none;font-family:var(--sans);}
+  h1{font-family:var(--serif);font-size:1.4rem;margin:0 0 6px;}
+  .status-row{display:flex;justify-content:space-between;align-items:center;margin:14px 0;direction:ltr;font-family:var(--mono);font-size:.85rem;color:#8a7d5c;}
+  .game-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  .mem-card{aspect-ratio:1;perspective:600px;cursor:pointer;}
+  .mem-inner{position:relative;width:100%;height:100%;transition:transform .4s;transform-style:preserve-3d;}
+  .mem-card.flipped .mem-inner, .mem-card.matched .mem-inner{transform:rotateY(180deg);}
+  .mem-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px -5px rgba(60,50,20,.1);}
+  .mem-front{background:var(--ink);color:var(--gold-soft);font-family:var(--serif);font-size:1.6rem;font-weight:700;}
+  .mem-back{background:#fff;border:2px solid #ecdfc2;transform:rotateY(180deg);flex-direction:column;padding:4px;}
+  .mem-back .emoji{font-size:1.6rem;line-height:1;}
+  .mem-back .word{font-family:var(--serif);font-size:.78rem;font-weight:700;margin-top:2px;}
+  .mem-card.matched .mem-back{border-color:var(--terminal);background:#e8f6ee;}
+  .win-banner{text-align:center;padding:26px;background:#e8f6ee;border:1px solid #bfe3cd;border-radius:16px;margin-top:16px;}
+  .btn{display:inline-block;padding:11px 20px;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer;border:1px solid transparent;font-family:var(--sans);}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),#d9ac54);color:var(--ink-2);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-bar">
+    <div class="badge">REVIEW · A-F</div>
+    <div style="display:flex;gap:8px;">
+      <a href="letter-engine.html?id=g" class="btn-outline" style="background:var(--gold);color:var(--ink-2);border-color:var(--gold);">المتابعة لحرف G ←</a>
+      <a href="index.html" class="btn-outline">🏠</a>
+    </div>
+  </div>
+  <h1 class="ar">لعبة الذاكرة — راجع حروف A إلى F</h1>
+  <p class="ar">اضغط على بطاقتين لكشفهما. إن تطابقتا (الكلمة مع رمزها)، تبقيان مكشوفتين!</p>
+  <div class="status-row"><span id="movesCount">Moves: 0</span><span id="pairsCount">Pairs: 0 / 8</span></div>
+  <div class="game-grid" id="gameGrid"></div>
+  <div id="winBanner"></div>
+</div>
+
+<script>
+var WORD_BANK = [
+  {w:"cat", emoji:"🐱"}, {w:"dog", emoji:"🐶"}, {w:"fish", emoji:"🐟"}, {w:"bear", emoji:"🐻"},
+  {w:"bee", emoji:"🐝"}, {w:"star", emoji:"⭐"}, {w:"car", emoji:"🚗"}, {w:"tree", emoji:"🌳"}
+];
+
+var cards = [];
+WORD_BANK.forEach(function(item, i){
+  cards.push({id:i, kind:'word', w:item.w, emoji:item.emoji});
+  cards.push({id:i, kind:'emoji', w:item.w, emoji:item.emoji});
+});
+cards = cards.sort(function(){return Math.random()-0.5;});
+
+var flipped = [];
+var matchedCount = 0;
+var moves = 0;
+var locked = false;
+
+function speak(text){
+  if(!('speechSynthesis' in window)) return;
+  var u = new SpeechSynthesisUtterance(text); u.rate = 0.9; u.lang = 'en-US';
+  window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+}
+
+function renderGrid(){
+  var grid = document.getElementById('gameGrid');
+  var html = '';
+  cards.forEach(function(card, idx){
+    var backContent = card.kind === 'emoji'
+      ? '<div class="emoji">'+card.emoji+'</div>'
+      : '<div class="word">'+card.w+'</div>';
+    html += '<div class="mem-card" id="card'+idx+'" onclick="flipCard('+idx+')">'+
+      '<div class="mem-inner">'+
+        '<div class="mem-face mem-front">?</div>'+
+        '<div class="mem-face mem-back">'+backContent+'</div>'+
+      '</div></div>';
+  });
+  grid.innerHTML = html;
+}
+renderGrid();
+
+function flipCard(idx){
+  if(locked) return;
+  var el = document.getElementById('card'+idx);
+  if(el.classList.contains('flipped') || el.classList.contains('matched')) return;
+  if(flipped.length >= 2) return;
+
+  el.classList.add('flipped');
+  flipped.push(idx);
+
+  if(flipped.length === 2){
+    moves++;
+    document.getElementById('movesCount').textContent = 'Moves: ' + moves;
+    var a = cards[flipped[0]], b = cards[flipped[1]];
+    if(a.id === b.id){
+      matchedCount++;
+      document.getElementById('pairsCount').textContent = 'Pairs: ' + matchedCount + ' / 8';
+      document.getElementById('card'+flipped[0]).classList.add('matched');
+      document.getElementById('card'+flipped[1]).classList.add('matched');
+      speak(a.w);
+      flipped = [];
+      if(matchedCount === WORD_BANK.length){
+        setTimeout(showWin, 500);
+      }
+    } else {
+      locked = true;
+      setTimeout(function(){
+        document.getElementById('card'+flipped[0]).classList.remove('flipped');
+        document.getElementById('card'+flipped[1]).classList.remove('flipped');
+        flipped = [];
+        locked = false;
+      }, 900);
+    }
+  }
+}
+
+function showWin(){
+  document.getElementById('winBanner').innerHTML =
+    '<div class="win-banner"><h2 style="margin-top:0;font-family:var(--serif);">🎉 أحسنت!</h2>'+
+    '<p>أنهيت اللعبة في ' + moves + ' محاولة.</p>'+
+    '<button class="btn btn-gold" onclick="location.reload()">↻ العب مرة أخرى</button></div>';
+}
+</script>
+</body>
+</html>
